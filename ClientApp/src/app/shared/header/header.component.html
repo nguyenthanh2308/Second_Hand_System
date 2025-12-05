@@ -1,0 +1,28 @@
+<nav class="navbar">
+  <div class="container">
+    <a routerLink="/" class="logo">SecondHand</a>
+    <ul class="nav-links">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+      <li><a routerLink="/catalog" routerLinkActive="active">Catalog</a></li>
+
+      <ng-container *ngIf="currentUser$ | async as user; else loginLink">
+        <li *ngIf="user.role === 'Admin'"><a routerLink="/admin/dashboard" routerLinkActive="active">Admin Dashboard</a>
+        </li>
+        <li>
+          <a routerLink="/cart" routerLinkActive="active">
+            <i class="fas fa-shopping-cart"></i> Cart
+            <span class="badge" *ngIf="(cartItemCount$ | async) as count">{{ count }}</span>
+          </a>
+        </li>
+        <li><a routerLink="/orders" routerLinkActive="active">My Orders</a></li>
+        <li><span class="username">Hi, {{ user.username }}</span></li>
+        <li><button (click)="logout()" class="btn-logout">Logout</button></li>
+      </ng-container>
+
+      <ng-template #loginLink>
+        <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+        <li><a routerLink="/register" routerLinkActive="active">Register</a></li>
+      </ng-template>
+    </ul>
+  </div>
+</nav>

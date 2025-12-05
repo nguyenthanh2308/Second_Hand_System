@@ -1,0 +1,7 @@
+.vs/
+bin/
+obj/
+*.user
+ClientApp/node_modules/
+build_log.txt
+test_log.txt

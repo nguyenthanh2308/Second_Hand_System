@@ -1,0 +1,28 @@
+<div class="container history-container">
+    <h2>My Orders</h2>
+
+    <div class="orders-list" *ngIf="orders$ | async as orders">
+        <div class="order-card" *ngFor="let order of orders">
+            <div class="order-header">
+                <span class="order-id">Order #{{ order.id }}</span>
+                <span class="order-date">{{ order.orderDate | date:'medium' }}</span>
+                <span class="order-status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            </div>
+
+            <div class="order-items">
+                <div class="order-item" *ngFor="let detail of order.orderDetails">
+                    <span>{{ detail.productName }}</span>
+                    <span>{{ detail.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                </div>
+            </div>
+
+            <div class="order-footer">
+                <strong>Total: {{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong>
+            </div>
+        </div>
+
+        <div *ngIf="orders.length === 0" class="no-orders">
+            <p>You haven't placed any orders yet.</p>
+        </div>
+    </div>
+</div>

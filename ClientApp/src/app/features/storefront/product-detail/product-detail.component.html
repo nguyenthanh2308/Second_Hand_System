@@ -1,0 +1,37 @@
+<div class="container py-5" *ngIf="product$ | async as product">
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <img [src]="product.imageUrl ? product.imageUrl : 'assets/placeholder.png'" class="card-img-top rounded"
+                    [alt]="product.name">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h1 class="display-5 fw-bold mb-3">{{ product.name }}</h1>
+            <p class="h3 text-primary mb-4">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</p>
+
+            <div class="mb-4">
+                <span class="badge bg-secondary me-2">{{ product.condition }}</span>
+                <span class="badge"
+                    [ngClass]="{'bg-success': product.status === 'Available', 'bg-danger': product.status === 'Sold'}">{{
+                    product.status }}</span>
+            </div>
+
+            <div class="mb-4">
+                <h5>Description</h5>
+                <p class="lead fs-6">{{ product.description }}</p>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button *ngIf="product.status === 'Available'" (click)="addToCart(product)"
+                    class="btn btn-primary btn-lg">
+                    <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                </button>
+                <button *ngIf="product.status === 'Sold'" disabled class="btn btn-secondary btn-lg">
+                    <i class="fas fa-ban me-2"></i> Sold Out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

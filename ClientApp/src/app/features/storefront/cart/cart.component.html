@@ -1,0 +1,77 @@
+<div class="container py-5">
+    <h2 class="text-center mb-4">Shopping Cart</h2>
+
+    <div *ngIf="(cartItems$ | async)?.length === 0" class="text-center py-5 bg-light rounded">
+        <p class="lead mb-4">Your cart is empty.</p>
+        <a routerLink="/catalog" class="btn btn-primary">Continue Shopping</a>
+    </div>
+
+    <div *ngIf="(cartItems$ | async)?.length as count" [hidden]="count === 0">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th scope="col" class="ps-4">Product</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col" class="text-end pe-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of cartItems$ | async">
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <img [src]="item.product.imageUrl ? item.product.imageUrl : 'assets/placeholder.png'"
+                                                    [alt]="item.product.name" class="rounded me-3"
+                                                    style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div>
+                                                    <h6 class="mb-0">{{ item.product.name }}</h6>
+                                                    <small class="text-muted">{{ item.product.condition }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ item.product.price | currency:'VND':'symbol':'1.0-0' }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td class="text-end pe-4">
+                                            <button (click)="removeItem(item.product.id)"
+                                                class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal</span>
+                            <strong>{{ cartService.totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4 fs-5">
+                            <strong>Total</strong>
+                            <strong class="text-primary">{{ cartService.totalAmount | currency:'VND':'symbol':'1.0-0'
+                                }}</strong>
+                        </div>
+                        <a routerLink="/checkout" class="btn btn-success w-100 btn-lg">Proceed to Checkout</a>
+                        <a routerLink="/catalog" class="btn btn-link w-100 mt-2 text-decoration-none">Continue
+                            Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

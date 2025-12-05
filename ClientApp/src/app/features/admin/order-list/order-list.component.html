@@ -1,0 +1,49 @@
+<div class="container-fluid">
+    <h2 class="mb-4">Manage Orders</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th scope="col" class="ps-4">Order ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of orders$ | async">
+                            <td class="ps-4">#{{ order.id }}</td>
+                            <td>{{ order.orderDate | date:'medium' }}</td>
+                            <td>User #{{ order.userId }}</td>
+                            <td>{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</td>
+                            <td>
+                                <select [ngModel]="order.status" (change)="updateStatus(order.id, $event)"
+                                    class="form-select form-select-sm" [ngClass]="{
+                  'text-warning': order.status === 'Pending',
+                  'text-primary': order.status === 'Shipping',
+                  'text-success': order.status === 'Completed',
+                  'text-danger': order.status === 'Cancelled'
+                }">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Shipping">Shipping</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </td>
+                            <td class="text-end pe-4">
+                                <button class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-eye"></i> Details
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

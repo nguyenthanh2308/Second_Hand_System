@@ -1,0 +1,6 @@
+/* Bootstrap handles most styling, adding minor tweaks */
+.card-img-top {
+    max-height: 500px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+}

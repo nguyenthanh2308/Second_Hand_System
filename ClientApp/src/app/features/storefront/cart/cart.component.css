@@ -1,0 +1,4 @@
+/* Bootstrap handles most styling */
+.table th {
+    border-top: none;
+}

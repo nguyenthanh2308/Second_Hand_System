@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Products</h2>
+        <a routerLink="/admin/products/add" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Product
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th scope="col" class="ps-4">ID</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let product of products$ | async">
+                            <td class="ps-4">#{{ product.id }}</td>
+                            <td>
+                                <img [src]="product.imageUrl ? product.imageUrl : 'assets/placeholder.png'"
+                                    class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                            </td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.price | currency:'VND':'symbol':'1.0-0' }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="{
+                  'bg-success': product.status === 'Available',
+                  'bg-danger': product.status === 'Sold',
+                  'bg-secondary': product.status === 'Hidden'
+                }">{{ product.status }}</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <button class="btn btn-sm btn-outline-primary me-2">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button (click)="deleteProduct(product.id)" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
