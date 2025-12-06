@@ -13,6 +13,7 @@ import { RegisterComponent } from './features/auth/register/register.component';
 import { AddProductComponent } from './features/admin/add-product/add-product.component';
 import { AdminProductListComponent } from './features/admin/product-list/product-list.component';
 import { AdminOrderListComponent } from './features/admin/order-list/order-list.component';
+import { EditProductComponent } from './features/admin/edit-product/edit-product.component';
 import { OrderHistoryComponent } from './features/customer/order-history/order-history.component';
 import { authGuard } from './core/guards/auth.guard';
 
@@ -45,6 +46,7 @@ export const routes: Routes = [
             { path: 'dashboard', component: AdminProductListComponent }, // Dashboard can just list products for now
             { path: 'products', component: AdminProductListComponent },
             { path: 'products/add', component: AddProductComponent },
+            { path: 'products/edit/:id', component: EditProductComponent },
             { path: 'orders', component: AdminOrderListComponent },
         ]
     },

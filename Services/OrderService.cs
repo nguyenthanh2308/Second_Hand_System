@@ -104,5 +104,30 @@ namespace Second_hand_System.Services
         {
             return await _orderRepository.GetOrdersByUserIdAsync(userId);
         }
+
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _orderRepository.GetAllAsync();
+        }
+
+        public async Task UpdateOrderStatusAsync(int orderId, string status)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                throw new Exception("Order not found.");
+            }
+
+            if (Enum.TryParse<OrderStatus>(status, out var orderStatus))
+            {
+                order.Status = orderStatus;
+                _orderRepository.Update(order);
+                await _orderRepository.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception("Invalid order status.");
+            }
+        }
     }
 }

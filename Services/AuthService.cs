@@ -23,7 +23,7 @@ namespace Second_hand_System.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
             if (user == null || user.PasswordHash != HashPassword(loginDto.Password))
             {
-                throw new Exception("Invalid username or password.");
+                throw new UnauthorizedAccessException("Invalid username or password.");
             }
 
             return _tokenService.GenerateToken(user);
@@ -33,7 +33,7 @@ namespace Second_hand_System.Services
         {
             if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
             {
-                throw new Exception("Username already exists.");
+                throw new BadHttpRequestException("Username already exists.");
             }
 
             var user = new User

@@ -50,7 +50,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "MinLengthKeyRequirement1234567890!!"))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "MinLengthKeyRequirement1234567890!!")),
+            // Map the role claim type to the correct claim type used in JWT
+            RoleClaimType = System.Security.Claims.ClaimTypes.Role
         };
     });
 

@@ -38,6 +38,12 @@ namespace Second_hand_System.Middleware
                 var result = JsonSerializer.Serialize(new { error = "Sản phẩm đã được người khác mua" });
                 return context.Response.WriteAsync(result);
             }
+            else if (exception is UnauthorizedAccessException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized; // 401
+                var result = JsonSerializer.Serialize(new { error = exception.Message });
+                return context.Response.WriteAsync(result);
+            }
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // 500

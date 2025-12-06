@@ -32,6 +32,36 @@ namespace Second_hand_System.Controllers
             return Ok(products);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null) return NotFound();
+            return Ok(product);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
+        {
+            if (id != product.Id) return BadRequest();
+            _repository.Update(product);
+            await _repository.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null) return NotFound();
+            
+            _repository.Delete(product);
+            await _repository.SaveChangesAsync();
+            return NoContent();
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductDto dto)

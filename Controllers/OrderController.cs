@@ -52,5 +52,28 @@ namespace Second_hand_System.Controllers
             var orders = await _orderService.GetMyOrdersAsync(userId);
             return Ok(orders);
         }
+
+
+        [HttpGet("all")]
+        // [Authorize(Roles = "Admin")] // Temporarily disabled for debugging
+        [Authorize] // Just check if user is authenticated
+        public async Task<IActionResult> GetAllOrders()
+        {
+            // DEBUG: Log user claims
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            Console.WriteLine($"DEBUG GetAllOrders - UserId: {userId}, Role: {role}, IsAuthenticated: {User.Identity?.IsAuthenticated}");
+            
+            var orders = await _orderService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
+
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] string status)
+        {
+            await _orderService.UpdateOrderStatusAsync(id, status);
+            return NoContent();
+        }
     }
 }

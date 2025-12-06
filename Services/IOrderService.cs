@@ -8,5 +8,7 @@ namespace Second_hand_System.Services
         Task<Order> CheckoutAsync(CreateOrderDto input);
         Task ChangeOrderStatusAsync(int orderId, OrderStatus status);
         Task<IEnumerable<Order>> GetMyOrdersAsync(int userId);
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task UpdateOrderStatusAsync(int orderId, string status);
     }
 }

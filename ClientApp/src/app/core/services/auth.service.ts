@@ -52,11 +52,12 @@ export class AuthService {
     private decodeToken(token: string): User {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
+            // .NET JWT uses full namespace for claims
             return {
-                id: parseInt(payload.nameid),
-                username: payload.unique_name,
-                email: payload.email,
-                role: payload.role,
+                id: parseInt(payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '0'),
+                username: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '',
+                email: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '',
+                role: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'Customer',
                 token: token
             };
         } catch (e) {

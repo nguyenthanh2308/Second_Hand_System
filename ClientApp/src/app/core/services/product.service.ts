@@ -28,8 +28,8 @@ export class ProductService {
         return this.http.post<Product>('/api/product', productData);
     }
 
-    updateProduct(id: number, productData: FormData): Observable<Product> {
-        return this.http.put<Product>(`/api/product/${id}`, productData);
+    updateProduct(id: number, product: Product): Observable<void> {
+        return this.http.put<void>(`/api/product/${id}`, product);
     }
 
     deleteProduct(id: number): Observable<void> {
