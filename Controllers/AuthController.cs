@@ -35,7 +35,7 @@ namespace Second_hand_System.Controllers
             try
             {
                 await _authService.RegisterAsync(registerDto);
-                return Ok("User registered successfully.");
+                return Ok(new { message = "User registered successfully." });
             }
             catch (Exception ex)
             {
