@@ -62,6 +62,16 @@ namespace Second_hand_System.Controllers
             return Ok(orders);
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            var order = orders.FirstOrDefault(o => o.Id == id);
+            if (order == null) return NotFound();
+            return Ok(order);
+        }
+
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] string status)

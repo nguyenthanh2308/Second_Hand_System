@@ -18,7 +18,9 @@ namespace Second_hand_System.Services
                 throw new ArgumentNullException(nameof(file));
             }
 
-            var uploadPath = Path.Combine(_env.WebRootPath, "images", folderName);
+            // Use ContentRootPath + wwwroot since WebRootPath might be null
+            var webRoot = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+            var uploadPath = Path.Combine(webRoot, "images", folderName);
 
             if (!Directory.Exists(uploadPath))
             {

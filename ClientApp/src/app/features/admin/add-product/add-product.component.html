@@ -21,8 +21,9 @@
         <div class="form-group">
             <label>Category</label>
             <select [(ngModel)]="product.categoryId" name="categoryId" required>
-                <option [ngValue]="1">Áo thun</option>
-                <option [ngValue]="2">Quần Jean</option>
+                <option *ngFor="let category of categories" [ngValue]="category.id">
+                    {{ category.name }}
+                </option>
             </select>
         </div>
 

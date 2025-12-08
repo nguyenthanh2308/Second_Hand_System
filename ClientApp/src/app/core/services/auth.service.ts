@@ -22,16 +22,9 @@ export class AuthService {
     }
 
     login(loginRequest: LoginRequest): Observable<string> {
-        return this.http.post<string>('/api/auth/login', loginRequest, { responseType: 'text' as 'json' })
-            .pipe(map(token => {
-                // Decode token to get user info (simplified for now, ideally use jwt-decode)
-                // For this demo, we'll fetch user profile or just mock the user object based on token claims if possible.
-                // Since backend only returns token string, we need to handle it.
-                // Let's assume we can decode it or we just store the token and role.
-                // Ideally backend should return User object + Token.
-                // But based on current BE, it returns just string.
-                // We will decode the token manually to get claims.
-
+        return this.http.post<{ token: string }>('/api/auth/login', loginRequest)
+            .pipe(map(response => {
+                const token = response.token;
                 const user = this.decodeToken(token);
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
@@ -52,12 +45,12 @@ export class AuthService {
     private decodeToken(token: string): User {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            // .NET JWT uses full namespace for claims
+            // JWT claims - check both simple names and .NET full namespace
             return {
-                id: parseInt(payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '0'),
-                username: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '',
-                email: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '',
-                role: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'Customer',
+                id: parseInt(payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || payload['nameid'] || '0'),
+                username: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload['unique_name'] || '',
+                email: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || payload['email'] || '',
+                role: payload['role'] || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'Customer',
                 token: token
             };
         } catch (e) {

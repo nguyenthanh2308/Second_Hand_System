@@ -42,11 +42,54 @@ namespace Second_hand_System.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDto dto)
         {
-            if (id != product.Id) return BadRequest();
-            _repository.Update(product);
+            Console.WriteLine($"=== UPDATE PRODUCT ===");
+            Console.WriteLine($"URL ID: {id}");
+            Console.WriteLine($"DTO ID: {dto?.Id}");
+            Console.WriteLine($"DTO Name: {dto?.Name}");
+            
+            if (dto == null)
+            {
+                Console.WriteLine("ERROR: dto is NULL");
+                return BadRequest("Product data is null");
+            }
+            
+            if (id != dto.Id)
+            {
+                Console.WriteLine($"ERROR: ID mismatch - URL: {id}, DTO: {dto.Id}");
+                return BadRequest($"ID mismatch - URL: {id}, DTO: {dto.Id}");
+            }
+            
+            var existingProduct = await _repository.GetByIdAsync(id);
+            if (existingProduct == null)
+            {
+                Console.WriteLine($"ERROR: Product {id} not found");
+                return NotFound();
+            }
+
+            // Update fields
+            existingProduct.Name = dto.Name;
+            existingProduct.Price = dto.Price;
+            existingProduct.OriginalPrice = dto.OriginalPrice ?? 0; // Handle nullable
+            existingProduct.Condition = dto.Condition;
+            existingProduct.Description = dto.Description;
+            existingProduct.CategoryId = dto.CategoryId;
+            
+            // Parse Status string to ProductStatus enum
+            if (Enum.TryParse<ProductStatus>(dto.Status, true, out var status))
+            {
+                existingProduct.Status = status;
+            }
+            else
+            {
+                Console.WriteLine($"WARNING: Invalid status '{dto.Status}', keeping existing");
+            }
+
+            _repository.Update(existingProduct);
             await _repository.SaveChangesAsync();
+            
+            Console.WriteLine($"SUCCESS: Product {id} updated");
             return NoContent();
         }
 

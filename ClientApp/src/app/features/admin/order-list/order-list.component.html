@@ -36,9 +36,9 @@
                                 </select>
                             </td>
                             <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-outline-info">
+                                <a [routerLink]="['/admin/orders', order.id]" class="btn btn-sm btn-outline-info">
                                     <i class="fas fa-eye"></i> Details
-                                </button>
+                                </a>
                             </td>
                         </tr>
                     </tbody>

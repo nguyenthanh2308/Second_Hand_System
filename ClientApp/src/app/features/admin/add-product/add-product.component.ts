@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
+import { CategoryService } from '../../../core/services/category.service';
 
 @Component({
     selector: 'app-add-product',
@@ -11,7 +12,7 @@ import { ProductService } from '../../../core/services/product.service';
     templateUrl: './add-product.component.html',
     styleUrls: ['./add-product.component.css']
 })
-export class AddProductComponent {
+export class AddProductComponent implements OnInit {
     product = {
         name: '',
         price: 0,
@@ -22,8 +23,29 @@ export class AddProductComponent {
     };
     selectedFile: File | null = null;
     isSubmitting = false;
+    categories: any[] = [];
 
-    constructor(private productService: ProductService, private router: Router) { }
+    constructor(
+        private productService: ProductService,
+        private categoryService: CategoryService,
+        private router: Router
+    ) { }
+
+    ngOnInit(): void {
+        this.loadCategories();
+    }
+
+    loadCategories(): void {
+        this.categoryService.getCategories().subscribe({
+            next: (data) => {
+                this.categories = data;
+                if (this.categories.length > 0) {
+                    this.product.categoryId = this.categories[0].id;
+                }
+            },
+            error: (err) => console.error('Failed to load categories', err)
+        });
+    }
 
     onFileSelected(event: any) {
         this.selectedFile = event.target.files[0];

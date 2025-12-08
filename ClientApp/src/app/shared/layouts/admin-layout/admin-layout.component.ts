@@ -4,10 +4,10 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
-    selector: 'app-admin-layout',
-    standalone: true,
-    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
-    template: `
+  selector: 'app-admin-layout',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  template: `
     <div class="admin-wrapper">
       <aside class="sidebar">
         <div class="sidebar-header">
@@ -16,6 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <nav class="sidebar-nav">
           <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
           <a routerLink="/admin/products" routerLinkActive="active">Manage Products</a>
+          <a routerLink="/admin/categories" routerLinkActive="active">Manage Categories</a>
           <a routerLink="/admin/orders" routerLinkActive="active">Manage Orders</a>
           <a routerLink="/" class="back-home">Back to Store</a>
           <button (click)="logout()" class="btn-logout">Logout</button>
@@ -26,7 +27,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </main>
     </div>
   `,
-    styles: [`
+  styles: [`
     .admin-wrapper {
       display: flex;
       min-height: 100vh;
@@ -85,9 +86,9 @@ import { AuthService } from '../../../core/services/auth.service';
   `]
 })
 export class AdminLayoutComponent {
-    constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) { }
 
-    logout() {
-        this.authService.logout();
-    }
+  logout() {
+    this.authService.logout();
+  }
 }

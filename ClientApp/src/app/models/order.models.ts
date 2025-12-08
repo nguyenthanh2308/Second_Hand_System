@@ -15,6 +15,13 @@ export interface OrderDetail {
     productName?: string;
     productImage?: string;
     price: number;
+    product?: {
+        id: number;
+        name: string;
+        imageUrl: string;
+        condition: string;
+        price: number;
+    };
 }
 
 export interface CreateOrderRequest {

@@ -51,8 +51,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "MinLengthKeyRequirement1234567890!!")),
-            // Map the role claim type to the correct claim type used in JWT
             RoleClaimType = System.Security.Claims.ClaimTypes.Role
+        };
+        
+        // Add event handlers for debugging
+        options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var claims = context.Principal?.Claims;
+                Console.WriteLine("=== JWT Token Validated ===");
+                if (claims != null)
+                {
+                    foreach (var claim in claims)
+                    {
+                        Console.WriteLine($"  Claim: {claim.Type} = {claim.Value}");
+                    }
+                }
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"=== JWT Authentication FAILED ===");
+                Console.WriteLine($"  Error: {context.Exception.Message}");
+                return Task.CompletedTask;
+            }
         };
     });
 

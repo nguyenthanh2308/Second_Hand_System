@@ -14,6 +14,9 @@ import { AddProductComponent } from './features/admin/add-product/add-product.co
 import { AdminProductListComponent } from './features/admin/product-list/product-list.component';
 import { AdminOrderListComponent } from './features/admin/order-list/order-list.component';
 import { EditProductComponent } from './features/admin/edit-product/edit-product.component';
+import { CategoryListComponent } from './features/admin/category-list/category-list.component';
+import { OrderDetailComponent } from './features/admin/order-detail/order-detail.component';
+import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { OrderHistoryComponent } from './features/customer/order-history/order-history.component';
 import { authGuard } from './core/guards/auth.guard';
 
@@ -43,11 +46,13 @@ export const routes: Routes = [
         data: { roles: ['Admin'] },
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-            { path: 'dashboard', component: AdminProductListComponent }, // Dashboard can just list products for now
+            { path: 'dashboard', component: DashboardComponent },
             { path: 'products', component: AdminProductListComponent },
             { path: 'products/add', component: AddProductComponent },
             { path: 'products/edit/:id', component: EditProductComponent },
+            { path: 'categories', component: CategoryListComponent },
             { path: 'orders', component: AdminOrderListComponent },
+            { path: 'orders/:id', component: OrderDetailComponent },
         ]
     },
 

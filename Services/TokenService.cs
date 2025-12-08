@@ -21,7 +21,7 @@ namespace Second_hand_System.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email), // Added Email claim
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 

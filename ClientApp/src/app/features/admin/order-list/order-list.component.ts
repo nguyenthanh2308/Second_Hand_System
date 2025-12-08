@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { OrderService } from '../../../core/services/order.service';
 import { Order } from '../../../models/order.models';
 import { Observable } from 'rxjs';
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 @Component({
     selector: 'app-admin-order-list',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterLink],
     templateUrl: './order-list.component.html',
     styleUrls: ['./order-list.component.css']
 })
