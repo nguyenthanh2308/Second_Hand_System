@@ -38,10 +38,12 @@
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let product of (products$ | async)?.slice(0, 6)">
-            <div class="product-card" [class.sold]="product.status === 'Sold'">
+            <div class="product-card" [class.sold]="product.status === 'Sold'"
+                [class.hidden]="product.status === 'Hidden'">
                 <div class="product-image">
                     <img [src]="product.imageUrl ? product.imageUrl : 'assets/placeholder.png'" [alt]="product.name">
-                    <span *ngIf="product.status === 'Sold'" class="sold-badge">SOLD</span>
+                    <span *ngIf="product.status === 'Sold'" class="sold-badge">ĐÃ BÁN</span>
+                    <span *ngIf="product.status === 'Hidden'" class="hidden-badge">ĐÃ ẨN</span>
                     <span *ngIf="product.status === 'Available'" class="condition-badge">{{ product.condition }}</span>
                 </div>
                 <div class="product-info">

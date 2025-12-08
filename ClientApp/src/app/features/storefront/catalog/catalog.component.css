@@ -1,12 +1,52 @@
-/* Custom styles to complement Bootstrap */
+/* Catalog Specific Styles matching Home */
 .card {
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
 }
 
-.card:hover {
-    transform: translateY(-5px);
+.card.sold .card-img-top {
+    filter: blur(2px) grayscale(100%);
+    opacity: 0.8;
 }
 
-.opacity-50 {
-    opacity: 0.6;
+.card.hidden {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.card.hidden .card-img-top {
+    filter: grayscale(100%);
+}
+
+.sold-overlay-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ef4444;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: max-content;
+    z-index: 10;
+}
+
+.hidden-overlay-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #475569;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: max-content;
+    z-index: 10;
 }

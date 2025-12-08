@@ -139,10 +139,6 @@
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.product-card.sold {
-    opacity: 0.7;
-}
-
 .product-image {
     position: relative;
     height: 220px;
@@ -160,17 +156,52 @@
     transform: scale(1.05);
 }
 
+.product-card.sold .product-image img {
+    filter: blur(2px) grayscale(100%);
+    opacity: 0.8;
+}
+
+.product-card.hidden {
+    opacity: 0.5;
+    pointer-events: none;
+    /* Disable interaction */
+}
+
+.product-card.hidden .product-image img {
+    filter: grayscale(100%);
+}
+
 .sold-badge {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: #ef4444;
+    /* Red for Sold */
     color: white;
     padding: 0.5rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: max-content;
+}
+
+.hidden-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #475569;
+    /* Gray for Hidden */
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .condition-badge {
