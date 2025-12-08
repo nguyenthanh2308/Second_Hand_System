@@ -10,6 +10,7 @@ export interface Product {
     createdDate: Date;
     categoryId: number;
     categoryName?: string;
+    category?: { id: number, name: string, description: string };
 }
 
 export interface ProductFilter {

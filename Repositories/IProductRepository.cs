@@ -10,5 +10,7 @@ namespace Second_hand_System.Repositories
             decimal? maxPrice,
             int? categoryId,
             string? condition);
+
+        Task<Product?> GetProductByIdWithCategoryAsync(int id);
     }
 }

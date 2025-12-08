@@ -1,28 +1,90 @@
-<div class="container history-container">
-    <h2>My Orders</h2>
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold">My Orders</h2>
 
-    <div class="orders-list" *ngIf="orders$ | async as orders">
-        <div class="order-card" *ngFor="let order of orders">
-            <div class="order-header">
-                <span class="order-id">Order #{{ order.id }}</span>
-                <span class="order-date">{{ order.orderDate | date:'medium' }}</span>
-                <span class="order-status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
-            </div>
+    <!-- Status Tabs -->
+    <div class="status-tabs mb-4">
+        <button class="tab-btn" [class.active]="activeStatus === 'All'" (click)="setStatus('All')">All</button>
+        <button class="tab-btn" [class.active]="activeStatus === 'Pending'"
+            (click)="setStatus('Pending')">Pending</button>
+        <button class="tab-btn" [class.active]="activeStatus === 'Shipping'"
+            (click)="setStatus('Shipping')">Shipping</button>
+        <button class="tab-btn" [class.active]="activeStatus === 'Completed'"
+            (click)="setStatus('Completed')">Completed</button>
+        <button class="tab-btn" [class.active]="activeStatus === 'Cancelled'"
+            (click)="setStatus('Cancelled')">Cancelled</button>
+    </div>
 
-            <div class="order-items">
-                <div class="order-item" *ngFor="let detail of order.orderDetails">
-                    <span>{{ detail.productName }}</span>
-                    <span>{{ detail.price | currency:'VND':'symbol':'1.0-0' }}</span>
+    <div class="orders-list">
+        <div class="order-card shadow-sm" *ngFor="let order of filteredOrders">
+            <!-- Card Header (Summary) -->
+            <div class="order-header" (click)="toggleDetails(order.id)">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="d-flex flex-column gap-1">
+                        <span class="fs-5 fw-bold">Order #{{ order.id }}</span>
+                        <span class="text-muted small">{{ order.orderDate | date:'medium' }}</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="order-thumbnails d-none d-md-flex">
+                            <img *ngFor="let detail of order.orderDetails.slice(0, 3)"
+                                [src]="detail.product?.imageUrl ? detail.product?.imageUrl : 'assets/placeholder.png'"
+                                class="rounded border" alt="Product">
+                            <span *ngIf="order.orderDetails.length > 3" class="more-items">+{{ order.orderDetails.length
+                                - 3 }}</span>
+                        </div>
+
+                        <div class="text-end">
+                            <div class="fw-bold fs-5 text-primary">{{ order.totalAmount |
+                                currency:'VND':'symbol':'1.0-0' }}</div>
+                            <span class="badge rounded-pill" [ngClass]="{
+                                    'bg-warning text-dark': order.status === 'Pending',
+                                    'bg-info text-dark': order.status === 'Shipping',
+                                    'bg-success': order.status === 'Completed',
+                                    'bg-danger': order.status === 'Cancelled'
+                                  }">
+                                {{ order.status }}
+                            </span>
+                        </div>
+
+                        <i class="fas fa-chevron-down transition-icon" [class.rotate]="isExpanded(order.id)"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="order-footer">
-                <strong>Total: {{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong>
+            <!-- Expanded Details -->
+            <div class="order-details" *ngIf="isExpanded(order.id)">
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle">
+                        <tbody>
+                            <tr *ngFor="let detail of order.orderDetails">
+                                <td style="width: 60px;">
+                                    <img [src]="detail.product?.imageUrl ? detail.product?.imageUrl : 'assets/placeholder.png'"
+                                        class="rounded" width="50" height="50" style="object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div class="fw-medium">{{ detail.productName }}</div>
+                                    <div class="text-muted small">Qty: 1</div>
+                                </td>
+                                <td class="text-end">{{ detail.price | currency:'VND':'symbol':'1.0-0' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                    <span class="text-muted"><i class="fas fa-map-marker-alt me-2"></i> {{ order.shippingAddress
+                        }}</span>
+                    <!-- Action Buttons Placeholder -->
+                    <button class="btn btn-outline-primary btn-sm" *ngIf="order.status === 'Completed'">Buy
+                        Again</button>
+                </div>
             </div>
         </div>
 
-        <div *ngIf="orders.length === 0" class="no-orders">
-            <p>You haven't placed any orders yet.</p>
+        <div *ngIf="filteredOrders.length === 0" class="text-center py-5">
+            <img src="assets/placeholder.png" alt="Empty" width="100" class="mb-3 opacity-25"
+                style="filter: grayscale(1);">
+            <p class="text-muted fs-5">No orders found in this status.</p>
         </div>
     </div>
 </div>

@@ -25,7 +25,7 @@ namespace Second_hand_System.Services
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetByIdAsync(id);
+            return await _productRepository.GetProductByIdWithCategoryAsync(id);
         }
     }
 }

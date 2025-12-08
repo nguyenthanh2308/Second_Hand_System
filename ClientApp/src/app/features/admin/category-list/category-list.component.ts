@@ -82,7 +82,15 @@ import { CategoryService, Category } from '../../../core/services/category.servi
     </div>
     `,
     styles: [`
-        .modal.d-block { display: block !important; }
+        .modal.d-block { 
+            display: flex !important; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .modal-dialog {
+            width: 100%; /* Ensure proper width handling in flex container */
+            max-width: 500px;
+        }
     `]
 })
 export class CategoryListComponent implements OnInit {

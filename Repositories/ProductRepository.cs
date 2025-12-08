@@ -49,5 +49,12 @@ namespace Second_hand_System.Repositories
 
             return await query.ToListAsync();
         }
+
+        public async Task<Product?> GetProductByIdWithCategoryAsync(int id)
+        {
+            return await _dbSet
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
     }
 }

@@ -8,8 +8,28 @@
         </div>
 
         <div class="col-md-6">
+            <div class="mb-2">
+                <span class="badge bg-light text-dark border me-2" *ngIf="product.category?.name">
+                    <i class="fas fa-tag text-muted me-1"></i> {{ product.category?.name }}
+                </span>
+                <span class="text-muted small">
+                    <i class="far fa-clock me-1"></i> Posted: {{ product.createdDate | date:'mediumDate' }}
+                </span>
+            </div>
+
             <h1 class="display-5 fw-bold mb-3">{{ product.name }}</h1>
-            <p class="h3 text-primary mb-4">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</p>
+
+            <div class="mb-4 d-flex align-items-baseline gap-3">
+                <span class="h2 text-primary fw-bold">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                <span *ngIf="product.originalPrice && product.originalPrice > product.price"
+                    class="text-decoration-line-through text-muted fs-5">
+                    {{ product.originalPrice | currency:'VND':'symbol':'1.0-0' }}
+                </span>
+                <span *ngIf="product.originalPrice && product.originalPrice > product.price"
+                    class="badge bg-danger rounded-pill">
+                    -{{ ((product.originalPrice - product.price) / product.originalPrice) | percent:'1.0-0' }}
+                </span>
+            </div>
 
             <div class="mb-4">
                 <span class="badge bg-secondary me-2">{{ product.condition }}</span>
