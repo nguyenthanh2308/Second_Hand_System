@@ -18,6 +18,7 @@ import { AuthService } from '../../../core/services/auth.service';
           <a routerLink="/admin/products" routerLinkActive="active">Manage Products</a>
           <a routerLink="/admin/categories" routerLinkActive="active">Manage Categories</a>
           <a routerLink="/admin/orders" routerLinkActive="active">Manage Orders</a>
+          <a routerLink="/admin/users" routerLinkActive="active">Manage Users</a>
           <a routerLink="/" class="back-home">Back to Store</a>
           <button (click)="logout()" class="btn-logout">Logout</button>
         </nav>
