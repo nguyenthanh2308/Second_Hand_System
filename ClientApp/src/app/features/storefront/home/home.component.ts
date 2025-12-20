@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Product } from '../../../models/product.models';
 import { Observable } from 'rxjs';
 
@@ -15,7 +16,10 @@ import { Observable } from 'rxjs';
 export class HomeComponent implements OnInit {
     products$: Observable<Product[]> | undefined;
 
-    constructor(private productService: ProductService) { }
+    constructor(
+        private productService: ProductService,
+        public authService: AuthService
+    ) { }
 
     ngOnInit(): void {
         // Fetch latest products (e.g., first page, or specific 'latest' endpoint if available)

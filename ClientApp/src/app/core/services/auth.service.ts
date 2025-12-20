@@ -42,6 +42,10 @@ export class AuthService {
         this.router.navigate(['/login']);
     }
 
+    isLoggedIn(): boolean {
+        return this.currentUserValue !== null;
+    }
+
     private decodeToken(token: string): User {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));

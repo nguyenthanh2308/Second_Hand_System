@@ -1,90 +1,136 @@
-<div class="container py-5">
-    <h2 class="mb-4 fw-bold">My Orders</h2>
+<div class="orders-wrapper">
+    <div class="container">
+        <!-- Header -->
+        <div class="orders-header">
+            <h1 class="page-title">
+                <i class="fas fa-receipt"></i>
+                My Orders
+            </h1>
+        </div>
 
-    <!-- Status Tabs -->
-    <div class="status-tabs mb-4">
-        <button class="tab-btn" [class.active]="activeStatus === 'All'" (click)="setStatus('All')">All</button>
-        <button class="tab-btn" [class.active]="activeStatus === 'Pending'"
-            (click)="setStatus('Pending')">Pending</button>
-        <button class="tab-btn" [class.active]="activeStatus === 'Shipping'"
-            (click)="setStatus('Shipping')">Shipping</button>
-        <button class="tab-btn" [class.active]="activeStatus === 'Completed'"
-            (click)="setStatus('Completed')">Completed</button>
-        <button class="tab-btn" [class.active]="activeStatus === 'Cancelled'"
-            (click)="setStatus('Cancelled')">Cancelled</button>
-    </div>
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="tab-btn" [class.active]="activeStatus === 'All'" (click)="setStatus('All')">
+                <i class="fas fa-th"></i>
+                All
+            </button>
+            <button class="tab-btn" [class.active]="activeStatus === 'Pending'" (click)="setStatus('Pending')">
+                <i class="fas fa-clock"></i>
+                Pending
+            </button>
+            <button class="tab-btn" [class.active]="activeStatus === 'Shipping'" (click)="setStatus('Shipping')">
+                <i class="fas fa-shipping-fast"></i>
+                Shipping
+            </button>
+            <button class="tab-btn" [class.active]="activeStatus === 'Completed'" (click)="setStatus('Completed')">
+                <i class="fas fa-check-circle"></i>
+                Completed
+            </button>
+            <button class="tab-btn" [class.active]="activeStatus === 'Cancelled'" (click)="setStatus('Cancelled')">
+                <i class="fas fa-times-circle"></i>
+                Cancelled
+            </button>
+        </div>
 
-    <div class="orders-list">
-        <div class="order-card shadow-sm" *ngFor="let order of filteredOrders">
-            <!-- Card Header (Summary) -->
-            <div class="order-header" (click)="toggleDetails(order.id)">
-                <div class="d-flex justify-content-between align-items-center w-100">
-                    <div class="d-flex flex-column gap-1">
-                        <span class="fs-5 fw-bold">Order #{{ order.id }}</span>
-                        <span class="text-muted small">{{ order.orderDate | date:'medium' }}</span>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-4">
-                        <div class="order-thumbnails d-none d-md-flex">
-                            <img *ngFor="let detail of order.orderDetails.slice(0, 3)"
-                                [src]="detail.product?.imageUrl ? detail.product?.imageUrl : 'assets/placeholder.png'"
-                                class="rounded border" alt="Product">
-                            <span *ngIf="order.orderDetails.length > 3" class="more-items">+{{ order.orderDetails.length
-                                - 3 }}</span>
-                        </div>
-
-                        <div class="text-end">
-                            <div class="fw-bold fs-5 text-primary">{{ order.totalAmount |
-                                currency:'VND':'symbol':'1.0-0' }}</div>
-                            <span class="badge rounded-pill" [ngClass]="{
-                                    'bg-warning text-dark': order.status === 'Pending',
-                                    'bg-info text-dark': order.status === 'Shipping',
-                                    'bg-success': order.status === 'Completed',
-                                    'bg-danger': order.status === 'Cancelled'
-                                  }">
-                                {{ order.status }}
+        <!-- Orders List -->
+        <div class="orders-list">
+            <div class="order-card" *ngFor="let order of filteredOrders; let i = index"
+                [style.animation-delay.s]="i * 0.1">
+                <!-- Card Header (Summary) -->
+                <div class="order-header" (click)="toggleDetails(order.id)">
+                    <div class="header-main">
+                        <div class="order-info">
+                            <span class="order-id">Order #{{ order.id }}</span>
+                            <span class="order-date">
+                                <i class="far fa-calendar-alt"></i>
+                                {{ order.orderDate | date:'medium' }}
                             </span>
                         </div>
 
-                        <i class="fas fa-chevron-down transition-icon" [class.rotate]="isExpanded(order.id)"></i>
+                        <div class="header-right">
+                            <div class="order-thumbnails">
+                                <div class="thumbnail" *ngFor="let detail of order.orderDetails.slice(0, 3)">
+                                    <img [src]="detail.product?.imageUrl ? detail.product?.imageUrl : 'assets/placeholder.png'"
+                                        alt="Product">
+                                </div>
+                                <div class="more-items" *ngIf="order.orderDetails.length > 3">
+                                    +{{ order.orderDetails.length - 3 }}
+                                </div>
+                            </div>
+
+                            <div class="order-summary">
+                                <div class="order-total">{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</div>
+                                <span class="status-badge" [ngClass]="{
+                                        'pending': order.status === 'Pending',
+                                        'shipping': order.status === 'Shipping',
+                                        'completed': order.status === 'Completed',
+                                        'cancelled': order.status === 'Cancelled'
+                                      }">
+                                    <i class="fas" [ngClass]="{
+                                        'fa-clock': order.status === 'Pending',
+                                        'fa-shipping-fast': order.status === 'Shipping',
+                                        'fa-check-circle': order.status === 'Completed',
+                                        'fa-times-circle': order.status === 'Cancelled'
+                                    }"></i>
+                                    {{ order.status }}
+                                </span>
+                            </div>
+
+                            <div class="expand-icon">
+                                <i class="fas fa-chevron-down" [class.rotate]="isExpanded(order.id)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expanded Details -->
+                <div class="order-details" *ngIf="isExpanded(order.id)">
+                    <div class="details-header">
+                        <i class="fas fa-box"></i>
+                        Order Items
+                    </div>
+
+                    <div class="details-items">
+                        <div class="detail-item" *ngFor="let detail of order.orderDetails">
+                            <div class="item-image">
+                                <img [src]="detail.product?.imageUrl ? detail.product?.imageUrl : 'assets/placeholder.png'"
+                                    alt="Product">
+                            </div>
+                            <div class="item-info">
+                                <h4>{{ detail.productName }}</h4>
+                                <span class="item-qty">Quantity: 1</span>
+                            </div>
+                            <div class="item-price">
+                                {{ detail.price | currency:'VND':'symbol':'1.0-0' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details-footer">
+                        <div class="shipping-address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ order.shippingAddress }}</span>
+                        </div>
+                        <button class="btn-buy-again" *ngIf="order.status === 'Completed'">
+                            <i class="fas fa-redo"></i>
+                            Buy Again
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Expanded Details -->
-            <div class="order-details" *ngIf="isExpanded(order.id)">
-                <hr>
-                <div class="table-responsive">
-                    <table class="table table-borderless align-middle">
-                        <tbody>
-                            <tr *ngFor="let detail of order.orderDetails">
-                                <td style="width: 60px;">
-                                    <img [src]="detail.product?.imageUrl ? detail.product?.imageUrl : 'assets/placeholder.png'"
-                                        class="rounded" width="50" height="50" style="object-fit: cover;">
-                                </td>
-                                <td>
-                                    <div class="fw-medium">{{ detail.productName }}</div>
-                                    <div class="text-muted small">Qty: 1</div>
-                                </td>
-                                <td class="text-end">{{ detail.price | currency:'VND':'symbol':'1.0-0' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Empty State -->
+            <div *ngIf="filteredOrders.length === 0" class="empty-orders">
+                <div class="empty-icon">
+                    <i class="fas fa-inbox"></i>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                    <span class="text-muted"><i class="fas fa-map-marker-alt me-2"></i> {{ order.shippingAddress
-                        }}</span>
-                    <!-- Action Buttons Placeholder -->
-                    <button class="btn btn-outline-primary btn-sm" *ngIf="order.status === 'Completed'">Buy
-                        Again</button>
-                </div>
+                <h3>No orders found</h3>
+                <p>You don't have any {{ activeStatus === 'All' ? '' : activeStatus.toLowerCase() }} orders yet</p>
+                <a routerLink="/catalog" class="btn-shop-now">
+                    <i class="fas fa-shopping-bag"></i>
+                    Start Shopping
+                </a>
             </div>
-        </div>
-
-        <div *ngIf="filteredOrders.length === 0" class="text-center py-5">
-            <img src="assets/placeholder.png" alt="Empty" width="100" class="mb-3 opacity-25"
-                style="filter: grayscale(1);">
-            <p class="text-muted fs-5">No orders found in this status.</p>
         </div>
     </div>
 </div>

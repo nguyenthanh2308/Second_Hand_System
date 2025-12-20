@@ -1,74 +1,135 @@
-<div class="container py-5">
-    <h2 class="text-center mb-4">Shopping Cart</h2>
+<div class="cart-wrapper">
+    <div class="container">
+        <!-- Header -->
+        <div class="cart-header">
+            <h1 class="page-title">
+                <i class="fas fa-shopping-cart"></i>
+                Shopping Cart
+            </h1>
+            <div class="cart-count" *ngIf="(cartItems$ | async)?.length as count">
+                {{ count }} {{ count === 1 ? 'item' : 'items' }}
+            </div>
+        </div>
 
-    <div *ngIf="(cartItems$ | async)?.length === 0" class="text-center py-5 bg-light rounded">
-        <p class="lead mb-4">Your cart is empty.</p>
-        <a routerLink="/catalog" class="btn btn-primary">Continue Shopping</a>
-    </div>
+        <!-- Empty State -->
+        <div *ngIf="(cartItems$ | async)?.length === 0" class="empty-cart">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3>Your cart is empty</h3>
+            <p>Looks like you haven't added any items to your cart yet</p>
+            <a routerLink="/catalog" class="btn-shop-now">
+                <i class="fas fa-shopping-bag"></i>
+                Start Shopping
+            </a>
+        </div>
 
-    <div *ngIf="(cartItems$ | async)?.length as count" [hidden]="count === 0">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0 align-middle">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th scope="col" class="ps-4">Product</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col" class="text-end pe-4">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let item of cartItems$ | async">
-                                        <td class="ps-4">
-                                            <div class="d-flex align-items-center">
-                                                <img [src]="item.product.imageUrl ? item.product.imageUrl : 'assets/placeholder.png'"
-                                                    [alt]="item.product.name" class="rounded me-3"
-                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                <div>
-                                                    <h6 class="mb-0">{{ item.product.name }}</h6>
-                                                    <small class="text-muted">{{ item.product.condition }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{ item.product.price | currency:'VND':'symbol':'1.0-0' }}</td>
-                                        <td>{{ item.quantity }}</td>
-                                        <td class="text-end pe-4">
-                                            <button (click)="removeItem(item.product.id)"
-                                                class="btn btn-outline-danger btn-sm">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+        <!-- Cart Items -->
+        <div *ngIf="(cartItems$ | async)?.length as count" [hidden]="count === 0" class="cart-content">
+            <div class="cart-grid">
+                <!-- Items Section -->
+                <div class="cart-items-section">
+                    <div class="section-title">
+                        <i class="fas fa-list"></i>
+                        Cart Items
+                    </div>
+
+                    <div class="cart-items">
+                        <div *ngFor="let item of cartItems$ | async; let i = index" class="cart-item"
+                            [style.animation-delay.s]="i * 0.1">
+                            <div class="item-image">
+                                <img [src]="item.product.imageUrl ? item.product.imageUrl : 'assets/placeholder.png'"
+                                    [alt]="item.product.name">
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-name">{{ item.product.name }}</h3>
+                                <div class="item-meta">
+                                    <span class="condition-tag">
+                                        <i class="fas fa-star"></i>
+                                        {{ item.product.condition }}
+                                    </span>
+                                    <span class="category-tag" *ngIf="item.product.category?.name">
+                                        <i class="fas fa-tag"></i>
+                                        {{ item.product.category?.name }}
+                                    </span>
+                                </div>
+                                <div class="item-price">
+                                    <span class="current-price">{{ item.product.price | currency:'VND':'symbol':'1.0-0'
+                                        }}</span>
+                                    <span class="original-price"
+                                        *ngIf="item.product.originalPrice && item.product.originalPrice > item.product.price">
+                                        {{ item.product.originalPrice | currency:'VND':'symbol':'1.0-0' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <div class="quantity-display">
+                                    <span class="qty-label">Qty:</span>
+                                    <span class="qty-value">{{ item.quantity }}</span>
+                                </div>
+                                <button (click)="removeItem(item.product.id)" class="btn-remove">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Remove
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Order Summary</h5>
+                <!-- Summary Section -->
+                <div class="cart-summary-section">
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <i class="fas fa-receipt"></i>
+                            Order Summary
+                        </div>
+                        <div class="summary-body">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span class="amount">{{ cartService.totalAmount | currency:'VND':'symbol':'1.0-0'
+                                    }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span class="amount free">FREE</span>
+                            </div>
+                            <div class="summary-row tax">
+                                <span>Tax</span>
+                                <span class="amount">Included</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-total">
+                                <span>Total</span>
+                                <span class="total-amount">{{ cartService.totalAmount | currency:'VND':'symbol':'1.0-0'
+                                    }}</span>
+                            </div>
+                        </div>
+                        <div class="summary-actions">
+                            <a routerLink="/checkout" class="btn-checkout">
+                                <i class="fas fa-lock"></i>
+                                Proceed to Checkout
+                            </a>
+                            <a routerLink="/catalog" class="btn-continue">
+                                <i class="fas fa-arrow-left"></i>
+                                Continue Shopping
+                            </a>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Subtotal</span>
-                            <strong>{{ cartService.totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong>
+
+                    <!-- Trust Badges -->
+                    <div class="trust-badges">
+                        <div class="trust-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Checkout</span>
                         </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-4 fs-5">
-                            <strong>Total</strong>
-                            <strong class="text-primary">{{ cartService.totalAmount | currency:'VND':'symbol':'1.0-0'
-                                }}</strong>
+                        <div class="trust-item">
+                            <i class="fas fa-undo"></i>
+                            <span>Easy Returns</span>
                         </div>
-                        <a routerLink="/checkout" class="btn btn-success w-100 btn-lg">Proceed to Checkout</a>
-                        <a routerLink="/catalog" class="btn btn-link w-100 mt-2 text-decoration-none">Continue
-                            Shopping</a>
+                        <div class="trust-item">
+                            <i class="fas fa-headset"></i>
+                            <span>24/7 Support</span>
+                        </div>
                     </div>
                 </div>
             </div>

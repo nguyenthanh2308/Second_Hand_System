@@ -197,7 +197,7 @@
                 <a routerLink="/catalog" class="btn-cta-primary">
                     <i class="fas fa-shopping-bag"></i> Browse Products
                 </a>
-                <a routerLink="/register" class="btn-cta-secondary">
+                <a routerLink="/register" class="btn-cta-secondary" *ngIf="!authService.isLoggedIn()">
                     <i class="fas fa-user-plus"></i> Create Account
                 </a>
             </div>
