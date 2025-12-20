@@ -19,7 +19,8 @@ export class AddProductComponent implements OnInit {
         originalPrice: 0,
         condition: '',
         description: '',
-        categoryId: 1
+        categoryId: 1,
+        gender: 'Unisex'
     };
     selectedFile: File | null = null;
     isSubmitting = false;

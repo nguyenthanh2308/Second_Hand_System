@@ -1,5 +1,8 @@
 <nav class="navbar">
   <div class="container">
+    <button *ngIf="shouldShowBackButton()" class="back-btn" (click)="goBack()" title="Go back">
+      <i class="fas fa-arrow-left"></i>
+    </button>
     <a routerLink="/" class="logo">SecondHand</a>
     <ul class="nav-links">
       <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>

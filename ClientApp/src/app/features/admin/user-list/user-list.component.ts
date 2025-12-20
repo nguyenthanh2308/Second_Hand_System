@@ -11,9 +11,6 @@ import { UserService, User } from '../../../core/services/user.service';
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>User Management</h2>
-            <a routerLink="/admin/dashboard" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
         </div>
 
         <div class="card shadow-sm">

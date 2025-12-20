@@ -1,4 +1,20 @@
 <div class="container py-4">
+    <!-- Gender Filter Tabs -->
+    <div class="gender-tabs mb-3">
+        <button class="tab-btn" [class.active]="activeGender === 'All'" (click)="setGender('All')">
+            <i class="fas fa-th"></i> Tất cả
+        </button>
+        <button class="tab-btn" [class.active]="activeGender === 'Male'" (click)="setGender('Male')">
+            <i class="fas fa-mars"></i> Nam
+        </button>
+        <button class="tab-btn" [class.active]="activeGender === 'Female'" (click)="setGender('Female')">
+            <i class="fas fa-venus"></i> Nữ
+        </button>
+        <button class="tab-btn" [class.active]="activeGender === 'Unisex'" (click)="setGender('Unisex')">
+            <i class="fas fa-transgender"></i> Unisex
+        </button>
+    </div>
+
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 mb-4">
@@ -42,7 +58,7 @@
         <!-- Product Grid -->
         <div class="col-md-9">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-                <div class="col" *ngFor="let product of products$ | async">
+                <div class="col" *ngFor="let product of filteredProducts">
                     <div class="card h-100 shadow-sm" [class.sold]="product.status === 'Sold'"
                         [class.hidden]="product.status === 'Hidden'">
                         <div class="position-relative">
@@ -65,7 +81,7 @@
                 </div>
             </div>
 
-            <div *ngIf="(products$ | async)?.length === 0" class="alert alert-info mt-4 text-center">
+            <div *ngIf="filteredProducts.length === 0" class="alert alert-info mt-4 text-center">
                 No products found matching your criteria.
             </div>
         </div>

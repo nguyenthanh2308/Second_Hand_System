@@ -42,16 +42,24 @@ import { Product } from '../../../models/product.models';
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Category ID</label>
                             <input type="number" class="form-control" formControlName="categoryId" required>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Status</label>
                             <select class="form-select" formControlName="status">
                                 <option value="Available">Available</option>
                                 <option value="Sold">Sold</option>
                                 <option value="Hidden">Hidden</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Gender</label>
+                            <select class="form-select" formControlName="gender">
+                                <option value="Male">Nam</option>
+                                <option value="Female">Nữ</option>
+                                <option value="Unisex">Unisex</option>
                             </select>
                         </div>
                     </div>
@@ -98,6 +106,7 @@ export class EditProductComponent implements OnInit {
             description: [''],
             categoryId: [1, Validators.required],
             status: ['Available'],
+            gender: ['Unisex'],
             imageUrl: ['']
         });
     }

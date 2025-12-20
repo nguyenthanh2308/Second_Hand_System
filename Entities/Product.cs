@@ -29,6 +29,8 @@ namespace Second_hand_System.Entities
 
         public ProductStatus Status { get; set; } = ProductStatus.Available;
 
+        public ProductGender Gender { get; set; } = ProductGender.Unisex;
+
         // Foreign Key for Category
         public int CategoryId { get; set; }
 

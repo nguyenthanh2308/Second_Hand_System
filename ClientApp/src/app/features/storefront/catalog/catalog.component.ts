@@ -16,7 +16,10 @@ import { Observable } from 'rxjs';
 })
 export class CatalogComponent implements OnInit {
     products$: Observable<Product[]> | undefined;
+    allProducts: Product[] = [];
+    filteredProducts: Product[] = [];
     categories: Category[] = [];
+    activeGender: string = 'All';
     filters: any = {
         keyword: '',
         categoryId: null,
@@ -42,7 +45,26 @@ export class CatalogComponent implements OnInit {
     }
 
     loadProducts() {
-        this.products$ = this.productService.getProducts(this.filters);
+        this.productService.getProducts(this.filters).subscribe({
+            next: (data) => {
+                this.allProducts = data;
+                this.applyGenderFilter();
+            },
+            error: (err) => console.error('Failed to load products', err)
+        });
+    }
+
+    setGender(gender: string) {
+        this.activeGender = gender;
+        this.applyGenderFilter();
+    }
+
+    applyGenderFilter() {
+        if (this.activeGender === 'All') {
+            this.filteredProducts = this.allProducts;
+        } else {
+            this.filteredProducts = this.allProducts.filter(p => p.gender === this.activeGender);
+        }
     }
 
     applyFilters() {
