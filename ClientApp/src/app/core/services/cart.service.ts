@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Product } from '../../models/product.models';
+import { ToastService } from './toast.service';
 
 export interface CartItem {
     product: Product;
@@ -14,7 +15,7 @@ export class CartService {
     private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
     public cartItems$ = this.cartItemsSubject.asObservable();
 
-    constructor() {
+    constructor(private toastService: ToastService) {
         const storedCart = localStorage.getItem('cart');
         if (storedCart) {
             this.cartItemsSubject.next(JSON.parse(storedCart));
@@ -28,11 +29,11 @@ export class CartService {
         if (existingItem) {
             // For second-hand, maybe prevent > 1? But let's allow for now or just alert.
             // existingItem.quantity++; 
-            alert('This item is already in your cart.');
+            this.toastService.warning('This item is already in your cart.');
         } else {
             currentItems.push({ product, quantity: 1 });
             this.updateCart(currentItems);
-            alert('Added to cart!');
+            this.toastService.success('Added to cart!');
         }
     }
 

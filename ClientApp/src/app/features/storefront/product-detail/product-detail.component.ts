@@ -31,5 +31,6 @@ export class ProductDetailComponent implements OnInit {
 
     addToCart(product: Product) {
         this.cartService.addToCart(product);
+        // Toast is shown by CartService
     }
 }
