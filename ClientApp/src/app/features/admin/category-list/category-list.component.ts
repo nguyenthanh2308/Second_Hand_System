@@ -12,9 +12,14 @@ import { CategoryService, Category } from '../../../core/services/category.servi
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Manage Categories</h2>
-            <button class="btn btn-primary" (click)="showAddModal = true">
-                <i class="fas fa-plus"></i> Add Category
-            </button>
+            <div>
+                <a routerLink="/admin/dashboard" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <button class="btn btn-primary" (click)="showAddModal = true">
+                    <i class="fas fa-plus"></i> Add Category
+                </button>
+            </div>
         </div>
 
         <div class="card shadow-sm">

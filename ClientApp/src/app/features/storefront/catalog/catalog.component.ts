@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
+import { CategoryService, Category } from '../../../core/services/category.service';
 import { Product } from '../../../models/product.models';
 import { Observable } from 'rxjs';
 
@@ -15,6 +16,7 @@ import { Observable } from 'rxjs';
 })
 export class CatalogComponent implements OnInit {
     products$: Observable<Product[]> | undefined;
+    categories: Category[] = [];
     filters: any = {
         keyword: '',
         categoryId: null,
@@ -22,10 +24,21 @@ export class CatalogComponent implements OnInit {
         maxPrice: null
     };
 
-    constructor(private productService: ProductService) { }
+    constructor(
+        private productService: ProductService,
+        private categoryService: CategoryService
+    ) { }
 
     ngOnInit(): void {
         this.loadProducts();
+        this.loadCategories();
+    }
+
+    loadCategories() {
+        this.categoryService.getCategories().subscribe({
+            next: (data) => this.categories = data,
+            error: (err) => console.error('Failed to load categories', err)
+        });
     }
 
     loadProducts() {

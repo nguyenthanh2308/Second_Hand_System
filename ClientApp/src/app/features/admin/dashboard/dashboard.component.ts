@@ -85,9 +85,82 @@ import { forkJoin } from 'rxjs';
                         <a routerLink="/admin/orders" class="btn btn-outline-primary me-2">
                             <i class="fas fa-shopping-cart"></i> View Orders
                         </a>
-                        <a routerLink="/admin/categories" class="btn btn-outline-primary">
+                        <a routerLink="/admin/categories" class="btn btn-outline-primary me-2">
                             <i class="fas fa-tags"></i> Manage Categories
                         </a>
+                        <a routerLink="/admin/users" class="btn btn-outline-primary">
+                            <i class="fas fa-users"></i> Manage Users
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Reports Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">📊 Order Status Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Pending</span>
+                                <strong class="text-warning">{{ orderStatusBreakdown.pending }}</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-warning" [style.width.%]="getPercentage(orderStatusBreakdown.pending)"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Shipping</span>
+                                <strong class="text-info">{{ orderStatusBreakdown.shipping }}</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-info" [style.width.%]="getPercentage(orderStatusBreakdown.shipping)"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Completed</span>
+                                <strong class="text-success">{{ orderStatusBreakdown.completed }}</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" [style.width.%]="getPercentage(orderStatusBreakdown.completed)"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Cancelled</span>
+                                <strong class="text-danger">{{ orderStatusBreakdown.cancelled }}</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-danger" [style.width.%]="getPercentage(orderStatusBreakdown.cancelled)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">💰 Revenue Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 pb-2 border-bottom">
+                            <small class="text-muted">Total Revenue (All Time)</small>
+                            <h3 class="mb-0 text-success">{{ stats.totalRevenue | currency:'VND':'symbol':'1.0-0' }}</h3>
+                        </div>
+                        <div class="mb-3 pb-2 border-bottom">
+                            <small class="text-muted">Completed Orders</small>
+                            <h4 class="mb-0">{{ orderStatusBreakdown.completed }} orders</h4>
+                        </div>
+                        <div>
+                            <small class="text-muted">Average Order Value</small>
+                            <h4 class="mb-0">{{ getAverageOrderValue() | currency:'VND':'symbol':'1.0-0' }}</h4>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -149,6 +222,13 @@ export class DashboardComponent implements OnInit {
         pendingOrders: 0,
         totalRevenue: 0
     };
+    orderStatusBreakdown = {
+        pending: 0,
+        shipping: 0,
+        completed: 0,
+        cancelled: 0,
+        total: 0
+    };
     recentOrders: any[] = [];
 
     constructor(private http: HttpClient) { }
@@ -170,8 +250,27 @@ export class DashboardComponent implements OnInit {
                     .filter(o => o.status === 'Completed')
                     .reduce((sum, o) => sum + o.totalAmount, 0);
                 this.recentOrders = data.orders.slice(0, 5);
+
+                // Calculate order status breakdown
+                this.orderStatusBreakdown.pending = data.orders.filter(o => o.status === 'Pending').length;
+                this.orderStatusBreakdown.shipping = data.orders.filter(o => o.status === 'Shipping').length;
+                this.orderStatusBreakdown.completed = data.orders.filter(o => o.status === 'Completed').length;
+                this.orderStatusBreakdown.cancelled = data.orders.filter(o => o.status === 'Cancelled').length;
+                this.orderStatusBreakdown.total = data.orders.length;
             },
             error: (err) => console.error('Failed to load stats', err)
         });
+    }
+
+    getPercentage(value: number): number {
+        return this.orderStatusBreakdown.total > 0
+            ? (value / this.orderStatusBreakdown.total) * 100
+            : 0;
+    }
+
+    getAverageOrderValue(): number {
+        return this.orderStatusBreakdown.completed > 0
+            ? this.stats.totalRevenue / this.orderStatusBreakdown.completed
+            : 0;
     }
 }

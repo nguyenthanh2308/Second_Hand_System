@@ -18,6 +18,7 @@ import { CategoryListComponent } from './features/admin/category-list/category-l
 import { OrderDetailComponent } from './features/admin/order-detail/order-detail.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { OrderHistoryComponent } from './features/customer/order-history/order-history.component';
+import { UserListComponent } from './features/admin/user-list/user-list.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -53,6 +54,7 @@ export const routes: Routes = [
             { path: 'categories', component: CategoryListComponent },
             { path: 'orders', component: AdminOrderListComponent },
             { path: 'orders/:id', component: OrderDetailComponent },
+            { path: 'users', component: UserListComponent },
         ]
     },
 
