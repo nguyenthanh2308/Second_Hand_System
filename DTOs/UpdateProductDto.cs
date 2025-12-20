@@ -12,6 +12,7 @@ namespace Second_hand_System.DTOs
         public string? Description { get; set; }
         public int CategoryId { get; set; }
         public string Status { get; set; } = "Available";
+        public string Gender { get; set; } = "Unisex";
         public string? ImageUrl { get; set; } // Added to prevent binding error if frontend sends it
     }
 }

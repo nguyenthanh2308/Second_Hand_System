@@ -86,6 +86,16 @@ namespace Second_hand_System.Controllers
                 Console.WriteLine($"WARNING: Invalid status '{dto.Status}', keeping existing");
             }
 
+            // Parse Gender string to ProductGender enum
+            if (Enum.TryParse<ProductGender>(dto.Gender, true, out var gender))
+            {
+                existingProduct.Gender = gender;
+            }
+            else
+            {
+                Console.WriteLine($"WARNING: Invalid gender '{dto.Gender}', keeping existing");
+            }
+
             _repository.Update(existingProduct);
             await _repository.SaveChangesAsync();
             
@@ -125,6 +135,7 @@ namespace Second_hand_System.Controllers
                 ImageUrl = imageUrl,
                 CategoryId = dto.CategoryId,
                 Status = ProductStatus.Available,
+                Gender = Enum.TryParse<ProductGender>(dto.Gender, true, out var gender) ? gender : ProductGender.Unisex,
                 CreatedDate = DateTime.UtcNow
             };
 

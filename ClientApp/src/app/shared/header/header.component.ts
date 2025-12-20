@@ -31,7 +31,9 @@ export class HeaderComponent {
 
     shouldShowBackButton(): boolean {
         const currentUrl = this.router.url;
-        return !currentUrl.includes('/login') && !currentUrl.includes('/register');
+        return currentUrl !== '/' &&
+            !currentUrl.includes('/login') &&
+            !currentUrl.includes('/register');
     }
 
     goBack() {
