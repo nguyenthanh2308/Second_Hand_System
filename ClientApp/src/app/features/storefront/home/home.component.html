@@ -1,15 +1,21 @@
+<!-- Enhanced Hero Section -->
 <section class="hero-section">
     <div class="hero-overlay"></div>
     <div class="container hero-content">
-        <span class="hero-badge">🛍️ Trusted Second-Hand Marketplace</span>
+        <span class="hero-badge">
+            <i class="fas fa-certificate"></i> Trusted Second-Hand Marketplace
+        </span>
         <h1 class="hero-title">Discover Quality<br>Pre-Loved Items</h1>
-        <p class="hero-subtitle">Find amazing deals on unique second-hand products from verified sellers.</p>
+        <p class="hero-subtitle">Find amazing deals on unique second-hand products from verified sellers. Sustainable
+            shopping made easy.</p>
         <div class="hero-buttons">
-            <a routerLink="/catalog" class="btn btn-primary btn-lg">
-                <i class="fas fa-shopping-bag"></i> Shop Now
+            <a routerLink="/catalog" class="btn-hero-primary">
+                <span>Shop Now</span>
+                <i class="fas fa-arrow-right"></i>
             </a>
-            <a routerLink="/register" class="btn btn-outline-light btn-lg">
-                <i class="fas fa-user-plus"></i> Join Us
+            <a routerLink="/register" class="btn-hero-secondary">
+                <i class="fas fa-user-plus"></i>
+                <span>Join Us</span>
             </a>
         </div>
         <div class="hero-stats">
@@ -27,42 +33,174 @@
             </div>
         </div>
     </div>
+    <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+    </div>
 </section>
 
-<div class="container py-5">
-    <div class="section-header text-center mb-5">
-        <span class="section-badge">New Arrivals</span>
-        <h2 class="section-title">Latest Products</h2>
-        <p class="section-subtitle">Discover our newest additions to the collection</p>
+<!-- How It Works Section -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-badge">How It Works</span>
+            <h2 class="section-title">Simple & Easy Process</h2>
+            <p class="section-subtitle">Start buying pre-loved items in 3 simple steps</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>1. Browse</h3>
+                <p>Explore our curated collection of quality second-hand items</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3>2. Purchase</h3>
+                <p>Add to cart and complete your secure checkout process</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <h3>3. Receive</h3>
+                <p>Get your items delivered safely to your doorstep</p>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <div class="col" *ngFor="let product of (products$ | async)?.slice(0, 6)">
-            <div class="product-card" [class.sold]="product.status === 'Sold'"
-                [class.hidden]="product.status === 'Hidden'">
-                <div class="product-image">
-                    <img [src]="product.imageUrl ? product.imageUrl : 'assets/placeholder.png'" [alt]="product.name">
-                    <span *ngIf="product.status === 'Sold'" class="sold-badge">ĐÃ BÁN</span>
-                    <span *ngIf="product.status === 'Hidden'" class="hidden-badge">ĐÃ ẨN</span>
-                    <span *ngIf="product.status === 'Available'" class="condition-badge">{{ product.condition }}</span>
+<!-- Latest Products Section -->
+<section class="latest-products">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-badge">New Arrivals</span>
+            <h2 class="section-title">Latest Products</h2>
+            <p class="section-subtitle">Discover our newest additions to the collection</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" *ngFor="let product of (products$ | async)?.slice(0, 6); let i = index">
+                <div class="product-card" [class.sold]="product.status === 'Sold'"
+                    [class.hidden]="product.status === 'Hidden'" [style.animation-delay.s]="i * 0.1">
+                    <div class="product-image">
+                        <img [src]="product.imageUrl ? product.imageUrl : 'assets/placeholder.png'"
+                            [alt]="product.name">
+                        <span *ngIf="product.status === 'Sold'" class="sold-badge">ĐÃ BÁN</span>
+                        <span *ngIf="product.status === 'Hidden'" class="hidden-badge">ĐÃ ẨN</span>
+                        <span *ngIf="product.status === 'Available'" class="condition-badge">{{ product.condition
+                            }}</span>
+                        <div class="product-overlay">
+                            <a [routerLink]="['/catalog', product.id]" class="quick-view">
+                                <i class="fas fa-eye"></i> Quick View
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <div class="price-container">
+                            <p class="product-price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</p>
+                            <p class="product-original" *ngIf="product.originalPrice">
+                                <del>{{ product.originalPrice | currency:'VND':'symbol':'1.0-0' }}</del>
+                            </p>
+                        </div>
+                    </div>
+                    <a [routerLink]="['/catalog', product.id]" class="product-link">
+                        View Details <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name">{{ product.name }}</h3>
-                    <p class="product-price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</p>
-                    <p class="product-original" *ngIf="product.originalPrice">
-                        Was: <del>{{ product.originalPrice | currency:'VND':'symbol':'1.0-0' }}</del>
-                    </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a routerLink="/catalog" class="btn-view-all">
+                <i class="fas fa-th-large"></i> View All Products
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Category Showcase -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-badge">Shop by Category</span>
+            <h2 class="section-title">Popular Categories</h2>
+            <p class="section-subtitle">Find what you're looking for in our curated categories</p>
+        </div>
+        <div class="categories-grid">
+            <a routerLink="/catalog" class="category-card">
+                <i class="fas fa-tshirt"></i>
+                <span>Fashion & Apparel</span>
+            </a>
+            <a routerLink="/catalog" class="category-card">
+                <i class="fas fa-laptop"></i>
+                <span>Electronics</span>
+            </a>
+            <a routerLink="/catalog" class="category-card">
+                <i class="fas fa-home"></i>
+                <span>Home & Living</span>
+            </a>
+            <a routerLink="/catalog" class="category-card">
+                <i class="fas fa-dumbbell"></i>
+                <span>Sports & Outdoors</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Badges / Features -->
+<section class="features-section">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
-                <a [routerLink]="['/catalog', product.id]" class="product-link">
-                    View Details <i class="fas fa-arrow-right"></i>
+                <h3>Secure Shopping</h3>
+                <p>100% secure payment processing for your peace of mind</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <h3>Easy Returns</h3>
+                <p>7-day return policy on all purchases</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3>Fast Delivery</h3>
+                <p>Quick and reliable shipping nationwide</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Customer service always ready to help</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Start Shopping?</h2>
+            <p>Join thousands of satisfied customers and discover amazing deals today</p>
+            <div class="cta-buttons">
+                <a routerLink="/catalog" class="btn-cta-primary">
+                    <i class="fas fa-shopping-bag"></i> Browse Products
+                </a>
+                <a routerLink="/register" class="btn-cta-secondary">
+                    <i class="fas fa-user-plus"></i> Create Account
                 </a>
             </div>
         </div>
     </div>
-
-    <div class="text-center mt-5">
-        <a routerLink="/catalog" class="btn btn-outline-primary btn-lg">
-            <i class="fas fa-th-large"></i> View All Products
-        </a>
-    </div>
-</div>
+</section>

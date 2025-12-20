@@ -47,6 +47,8 @@ import { AuthService } from '../../../core/services/auth.service';
     .sidebar-header h3 {
       margin: 0;
       font-size: 1.25rem;
+      color: #f8f9fa;
+      font-weight: 600;
     }
     .sidebar-nav {
       display: flex;
