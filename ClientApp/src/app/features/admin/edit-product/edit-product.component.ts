@@ -37,7 +37,19 @@ import { Product } from '../../../models/product.models';
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Condition (%)</label>
-                            <input type="text" class="form-control" formControlName="condition">
+                            <select class="form-select" formControlName="condition">
+                                <option value="">Select Condition</option>
+                                <option value="100%">100% - New</option>
+                                <option value="95%">95% - Like New</option>
+                                <option value="90%">90% - Excellent</option>
+                                <option value="85%">85% - Very Good</option>
+                                <option value="80%">80% - Good</option>
+                                <option value="75%">75%</option>
+                                <option value="70%">70%</option>
+                                <option value="65%">65%</option>
+                                <option value="60%">60%</option>
+                                <option value="50%">50% - Fair</option>
+                            </select>
                         </div>
                     </div>
 
@@ -69,6 +81,27 @@ import { Product } from '../../../models/product.models';
                         <textarea class="form-control" rows="4" formControlName="description"></textarea>
                     </div>
 
+                    <!-- Image Upload Section -->
+                    <div class="mb-3">
+                        <label class="form-label">Product Image</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div *ngIf="currentImageUrl" class="mb-2">
+                                    <label class="d-block text-muted small">Current Image:</label>
+                                    <img [src]="currentImageUrl" alt="Current product" class="img-thumbnail" style="max-width: 300px; max-height: 300px;">
+                                </div>
+                                <div *ngIf="previewImageUrl && previewImageUrl !== currentImageUrl" class="mb-2">
+                                    <label class="d-block text-success small">New Image Preview:</label>
+                                    <img [src]="previewImageUrl" alt="New product" class="img-thumbnail" style="max-width: 300px; max-height: 300px;">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+                                <small class="text-muted">Leave empty to keep current image</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary" [disabled]="!editForm.valid || isSubmitting">
                             {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
@@ -91,6 +124,9 @@ export class EditProductComponent implements OnInit {
     isSubmitting = false;
     errorMessage = '';
     successMessage = '';
+    selectedFile: File | null = null;
+    currentImageUrl: string = '';
+    previewImageUrl: string = '';
 
     constructor(
         private route: ActivatedRoute,
@@ -129,13 +165,29 @@ export class EditProductComponent implements OnInit {
                     description: product.description,
                     categoryId: product.categoryId,
                     status: product.status,
+                    gender: product.gender,
                     imageUrl: product.imageUrl
                 });
+                this.currentImageUrl = product.imageUrl || '';
+                this.previewImageUrl = product.imageUrl || '';
             },
             error: () => {
                 this.errorMessage = 'Failed to load product';
             }
         });
+    }
+
+    onFileSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            this.selectedFile = file;
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                this.previewImageUrl = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     onSubmit(): void {
@@ -144,12 +196,24 @@ export class EditProductComponent implements OnInit {
             this.errorMessage = '';
             this.successMessage = '';
 
-            const product: Product = {
-                id: this.productId,
-                ...this.editForm.value
-            };
+            // Always use FormData since backend expects [FromForm]
+            const formData = new FormData();
+            formData.append('Id', this.productId.toString());
+            formData.append('Name', this.editForm.value.name);
+            formData.append('Price', this.editForm.value.price.toString());
+            formData.append('OriginalPrice', this.editForm.value.originalPrice?.toString() || '0');
+            formData.append('Condition', this.editForm.value.condition || '');
+            formData.append('Description', this.editForm.value.description || '');
+            formData.append('CategoryId', this.editForm.value.categoryId.toString());
+            formData.append('Status', this.editForm.value.status);
+            formData.append('Gender', this.editForm.value.gender);
 
-            this.productService.updateProduct(this.productId, product).subscribe({
+            // Append image file if selected
+            if (this.selectedFile) {
+                formData.append('ImageFile', this.selectedFile);
+            }
+
+            this.productService.updateProductWithImage(this.productId, formData).subscribe({
                 next: () => {
                     this.successMessage = 'Product updated successfully!';
                     setTimeout(() => {

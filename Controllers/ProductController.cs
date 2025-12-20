@@ -42,12 +42,13 @@ namespace Second_hand_System.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDto dto)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] UpdateProductDto dto, [FromForm] IFormFile? ImageFile)
         {
             Console.WriteLine($"=== UPDATE PRODUCT ===");
             Console.WriteLine($"URL ID: {id}");
             Console.WriteLine($"DTO ID: {dto?.Id}");
             Console.WriteLine($"DTO Name: {dto?.Name}");
+            Console.WriteLine($"Has Image File: {ImageFile != null}");
             
             if (dto == null)
             {
@@ -71,7 +72,7 @@ namespace Second_hand_System.Controllers
             // Update fields
             existingProduct.Name = dto.Name;
             existingProduct.Price = dto.Price;
-            existingProduct.OriginalPrice = dto.OriginalPrice ?? 0; // Handle nullable
+            existingProduct.OriginalPrice = dto.OriginalPrice ?? 0;
             existingProduct.Condition = dto.Condition;
             existingProduct.Description = dto.Description;
             existingProduct.CategoryId = dto.CategoryId;
@@ -94,6 +95,14 @@ namespace Second_hand_System.Controllers
             else
             {
                 Console.WriteLine($"WARNING: Invalid gender '{dto.Gender}', keeping existing");
+            }
+
+            // Handle image upload if provided
+            if (ImageFile != null)
+            {
+                string imageUrl = await _fileStorageService.SaveFileAsync(ImageFile, "products");
+                existingProduct.ImageUrl = imageUrl;
+                Console.WriteLine($"New image uploaded: {imageUrl}");
             }
 
             _repository.Update(existingProduct);

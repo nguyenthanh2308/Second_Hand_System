@@ -32,6 +32,10 @@ export class ProductService {
         return this.http.put<void>(`/api/product/${id}`, product);
     }
 
+    updateProductWithImage(id: number, productData: FormData): Observable<void> {
+        return this.http.put<void>(`/api/product/${id}`, productData);
+    }
+
     deleteProduct(id: number): Observable<void> {
         return this.http.delete<void>(`/api/product/${id}`);
     }
