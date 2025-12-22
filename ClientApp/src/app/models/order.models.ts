@@ -21,6 +21,7 @@ export interface OrderDetail {
         imageUrl: string;
         condition: string;
         price: number;
+        status?: string;
     };
 }
 

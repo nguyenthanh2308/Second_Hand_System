@@ -32,8 +32,51 @@ export class AdminOrderListComponent implements OnInit {
 
     updateStatus(orderId: number, event: any) {
         const newStatus = event.target.value;
-        this.orderService.updateOrderStatus(orderId, newStatus).subscribe(() => {
-            this.toastService.success('Order status updated successfully');
+
+        // Special handling for Completed status
+        if (newStatus === 'Completed') {
+            // Get the order to check products
+            this.orderService.getAllOrders().subscribe(orders => {
+                const order = orders.find(o => o.id === orderId);
+                if (!order) return;
+
+                const productCount = order.orderDetails?.length || 0;
+                const soldProducts = order.orderDetails?.filter(d =>
+                    d.product && d.product.status === 'Sold'
+                ).length || 0;
+
+                let message = `Complete this order?\n\n`;
+                message += `This will mark ${productCount} product(s) as SOLD.\n`;
+
+                if (soldProducts > 0) {
+                    message += `\n⚠️ WARNING: ${soldProducts} product(s) are already sold!\n`;
+                    message += `This may cause issues with inventory.`;
+                }
+
+                if (!confirm(message)) {
+                    // Reset dropdown to previous value
+                    event.target.value = order.status;
+                    return;
+                }
+
+                this.performStatusUpdate(orderId, newStatus);
+            });
+        } else {
+            this.performStatusUpdate(orderId, newStatus);
+        }
+    }
+
+    performStatusUpdate(orderId: number, newStatus: string) {
+        this.orderService.updateOrderStatus(orderId, newStatus).subscribe({
+            next: () => {
+                this.toastService.success('Order status updated successfully');
+                this.loadOrders(); // Reload to get updated data
+            },
+            error: (error) => {
+                const message = error.error?.message || 'Failed to update status';
+                this.toastService.error(message);
+                this.loadOrders(); // Reload to reset dropdown
+            }
         });
     }
 

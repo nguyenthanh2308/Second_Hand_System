@@ -53,9 +53,20 @@ namespace Second_hand_System.Services
                         throw new Second_hand_System.Exceptions.ProductSoldException($"Product '{product.Name}' (ID: {productId}) is already sold or unavailable.");
                     }
 
-                    // LOCK ITEM: Set status to Sold
-                    product.Status = ProductStatus.Sold;
-                    _productRepository.Update(product); // Mark as modified
+                    // CHECK: Ensure product is not in any pending or shipping orders
+                    var existingOrders = await _context.Orders
+                        .Include(o => o.OrderDetails)
+                        .Where(o => (o.Status == OrderStatus.Pending || o.Status == OrderStatus.Shipping) &&
+                                   o.OrderDetails.Any(od => od.ProductId == productId))
+                        .AnyAsync();
+
+                    if (existingOrders)
+                    {
+                        throw new Second_hand_System.Exceptions.ProductSoldException($"Product '{product.Name}' (ID: {productId}) is currently in another pending order.");
+                    }
+
+                    // NOTE: Product status remains Available during checkout
+                    // It will only be set to Sold when admin marks order as Completed
 
                     // Add to OrderDetail
                     var detail = new OrderDetail
@@ -112,21 +123,50 @@ namespace Second_hand_System.Services
 
         public async Task UpdateOrderStatusAsync(int orderId, string status)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
-            if (order == null)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                throw new Exception("Order not found.");
-            }
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                    .FirstOrDefaultAsync(o => o.Id == orderId);
 
-            if (Enum.TryParse<OrderStatus>(status, out var orderStatus))
-            {
-                order.Status = orderStatus;
-                _orderRepository.Update(order);
-                await _orderRepository.SaveChangesAsync();
+                if (order == null)
+                {
+                    throw new Exception("Order not found.");
+                }
+
+                if (Enum.TryParse<OrderStatus>(status, out var orderStatus))
+                {
+                    order.Status = orderStatus;
+
+                    // When order is marked as Completed, mark all products as Sold
+                    if (orderStatus == OrderStatus.Completed)
+                    {
+                        foreach (var detail in order.OrderDetails)
+                        {
+                            if (detail.Product != null && detail.Product.Status == ProductStatus.Available)
+                            {
+                                detail.Product.Status = ProductStatus.Sold;
+                                _productRepository.Update(detail.Product);
+                            }
+                        }
+                    }
+
+                    _orderRepository.Update(order);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception("Invalid order status.");
+                }
             }
-            else
+            catch (Exception)
             {
-                throw new Exception("Invalid order status.");
+                await transaction.RollbackAsync();
+                throw;
             }
         }
 
@@ -167,13 +207,24 @@ namespace Second_hand_System.Services
                 order.Status = OrderStatus.Cancelled;
                 _orderRepository.Update(order);
 
-                // Restore all products to Available status
+                // Only restore products to Available if they were marked as Sold
+                // (i.e., if the order had been Completed before cancellation)
+                Console.WriteLine($"Restoring products for cancelled order {orderId}...");
                 foreach (var detail in order.OrderDetails)
                 {
                     if (detail.Product != null)
                     {
-                        detail.Product.Status = ProductStatus.Available;
-                        _productRepository.Update(detail.Product);
+                        Console.WriteLine($"Product {detail.ProductId} current status: {detail.Product.Status}");
+                        if (detail.Product.Status == ProductStatus.Sold)
+                        {
+                            detail.Product.Status = ProductStatus.Available;
+                            _productRepository.Update(detail.Product);
+                            Console.WriteLine($"Product {detail.ProductId} restored to Available");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Product {detail.ProductId} already Available, no restore needed");
+                        }
                     }
                 }
 
