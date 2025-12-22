@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
 import { OrderService } from '../../../core/services/order.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { CreateOrderRequest } from '../../../models/order.models';
 
 @Component({
@@ -23,6 +24,7 @@ export class CheckoutComponent {
         public cartService: CartService,
         private orderService: OrderService,
         private authService: AuthService,
+        private toastService: ToastService,
         private router: Router
     ) {
         const user = this.authService.currentUserValue;
@@ -61,11 +63,31 @@ export class CheckoutComponent {
             },
             error: (err) => {
                 this.isProcessing = false;
+                console.error('Checkout error:', err);
+
+                // Extract error message from response
+                let errorMsg = 'An error occurred while placing your order.';
+                if (err.error && typeof err.error === 'string') {
+                    errorMsg = err.error;
+                } else if (err.error && err.error.message) {
+                    errorMsg = err.error.message;
+                }
+
                 if (err.status === 409 || err.status === 400) {
-                    // Redirect to Failed Page for Race Condition
-                    this.router.navigate(['/order-failed']);
+                    // Product already sold - show specific toast notification
+                    if (errorMsg.includes('already sold') || errorMsg.includes('unavailable')) {
+                        this.toastService.error('Sorry! One or more items in your cart have been purchased by another customer. Please check your cart.');
+                        // Wait a bit then redirect
+                        setTimeout(() => {
+                            this.router.navigate(['/cart']);
+                        }, 2000);
+                    } else {
+                        this.toastService.error(errorMsg);
+                        this.router.navigate(['/order-failed']);
+                    }
                 } else {
-                    this.errorMessage = 'An error occurred while placing your order. Please try again.';
+                    this.toastService.error('An unexpected error occurred. Please try again.');
+                    this.errorMessage = errorMsg;
                 }
             }
         });
