@@ -97,6 +97,9 @@ namespace Second_hand_System.Controllers
                 Console.WriteLine($"WARNING: Invalid gender '{dto.Gender}', keeping existing");
             }
 
+            // Update Size field
+            existingProduct.Size = dto.Size;
+
             // Handle image upload if provided
             if (ImageFile != null)
             {
@@ -145,6 +148,7 @@ namespace Second_hand_System.Controllers
                 CategoryId = dto.CategoryId,
                 Status = ProductStatus.Available,
                 Gender = Enum.TryParse<ProductGender>(dto.Gender, true, out var gender) ? gender : ProductGender.Unisex,
+                Size = dto.Size,
                 CreatedDate = DateTime.UtcNow
             };
 

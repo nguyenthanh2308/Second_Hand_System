@@ -200,6 +200,7 @@ export class EditProductComponent implements OnInit {
                     categoryId: product.categoryId,
                     status: product.status,
                     gender: product.gender,
+                    size: product.size,
                     imageUrl: product.imageUrl
                 });
                 this.currentImageUrl = product.imageUrl || '';
@@ -241,6 +242,7 @@ export class EditProductComponent implements OnInit {
             formData.append('CategoryId', this.editForm.value.categoryId.toString());
             formData.append('Status', this.editForm.value.status);
             formData.append('Gender', this.editForm.value.gender);
+            formData.append('Size', this.editForm.value.size || '');
 
             // Append image file if selected
             if (this.selectedFile) {
