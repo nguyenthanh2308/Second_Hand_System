@@ -26,4 +26,9 @@ export class OrderService {
             headers: { 'Content-Type': 'application/json' }
         });
     }
+
+    cancelOrder(id: number, isAdmin: boolean = false): Observable<any> {
+        const endpoint = isAdmin ? `/api/order/${id}/cancel` : `/api/order/${id}/customer-cancel`;
+        return this.http.post<any>(endpoint, {});
+    }
 }

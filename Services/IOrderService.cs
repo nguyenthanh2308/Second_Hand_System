@@ -10,5 +10,6 @@ namespace Second_hand_System.Services
         Task<IEnumerable<Order>> GetMyOrdersAsync(int userId);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
         Task UpdateOrderStatusAsync(int orderId, string status);
+        Task CancelOrderAsync(int orderId, int requestingUserId, bool isAdmin);
     }
 }

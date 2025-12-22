@@ -8,6 +8,7 @@ export interface Product {
     imageUrl?: string;
     status: 'Available' | 'Sold' | 'Hidden';
     gender: 'Male' | 'Female' | 'Unisex';
+    size?: string;
     createdDate: Date;
     categoryId: number;
     categoryName?: string;

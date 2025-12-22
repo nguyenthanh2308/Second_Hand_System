@@ -31,6 +31,9 @@ namespace Second_hand_System.Entities
 
         public ProductGender Gender { get; set; } = ProductGender.Unisex;
 
+        [MaxLength(50)]
+        public string? Size { get; set; } // e.g., "M", "L", "42", "Free Size"
+
         // Foreign Key for Category
         public int CategoryId { get; set; }
 

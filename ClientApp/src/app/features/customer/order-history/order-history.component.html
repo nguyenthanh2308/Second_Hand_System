@@ -111,26 +111,33 @@
                             <i class="fas fa-map-marker-alt"></i>
                             <span>{{ order.shippingAddress }}</span>
                         </div>
-                        <button class="btn-buy-again" *ngIf="order.status === 'Completed'">
-                            <i class="fas fa-redo"></i>
-                            Buy Again
-                        </button>
+                        <div class="action-buttons">
+                            <button class="btn-cancel" *ngIf="order.status === 'Pending' || order.status === 'Shipping'"
+                                (click)="cancelOrder(order.id)">
+                                <i class="fas fa-times-circle"></i>
+                                Cancel Order
+                            </button>
+                            <button class="btn-buy-again" *ngIf="order.status === 'Completed'">
+                                <i class="fas fa-redo"></i>
+                                Buy Again
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Empty State -->
-            <div *ngIf="filteredOrders.length === 0" class="empty-orders">
-                <div class="empty-icon">
-                    <i class="fas fa-inbox"></i>
-                </div>
-                <h3>No orders found</h3>
-                <p>You don't have any {{ activeStatus === 'All' ? '' : activeStatus.toLowerCase() }} orders yet</p>
-                <a routerLink="/catalog" class="btn-shop-now">
-                    <i class="fas fa-shopping-bag"></i>
-                    Start Shopping
-                </a>
+        <!-- Empty State -->
+        <div *ngIf="filteredOrders.length === 0" class="empty-orders">
+            <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
             </div>
+            <h3>No orders found</h3>
+            <p>You don't have any {{ activeStatus === 'All' ? '' : activeStatus.toLowerCase() }} orders yet</p>
+            <a routerLink="/catalog" class="btn-shop-now">
+                <i class="fas fa-shopping-bag"></i>
+                Start Shopping
+            </a>
         </div>
     </div>
 </div>

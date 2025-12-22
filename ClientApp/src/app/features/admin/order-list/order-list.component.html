@@ -36,9 +36,15 @@
                                 </select>
                             </td>
                             <td class="text-end pe-4">
-                                <a [routerLink]="['/admin/orders', order.id]" class="btn btn-sm btn-outline-info">
-                                    <i class="fas fa-eye"></i> Details
-                                </a>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button *ngIf="order.status === 'Pending' || order.status === 'Shipping'"
+                                        (click)="cancelOrder(order.id)" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-times-circle"></i> Cancel
+                                    </button>
+                                    <a [routerLink]="['/admin/orders', order.id]" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

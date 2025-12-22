@@ -20,6 +20,8 @@ namespace Second_hand_System.DTOs
 
         public string Gender { get; set; } = "Unisex";
 
+        public string? Size { get; set; }
+
         public IFormFile? ImageFile { get; set; }
 
         [Required]

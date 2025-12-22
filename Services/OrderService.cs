@@ -129,5 +129,63 @@ namespace Second_hand_System.Services
                 throw new Exception("Invalid order status.");
             }
         }
+
+        public async Task CancelOrderAsync(int orderId, int requestingUserId, bool isAdmin)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Get order with details
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                    .FirstOrDefaultAsync(o => o.Id == orderId);
+
+                if (order == null)
+                {
+                    throw new Exception("Order not found.");
+                }
+
+                // Permission check: Customer can only cancel their own orders, Admin can cancel any
+                if (!isAdmin && order.UserId != requestingUserId)
+                {
+                    throw new UnauthorizedAccessException("You can only cancel your own orders.");
+                }
+
+                // Status validation: Only Pending and Shipping orders can be cancelled
+                if (order.Status == OrderStatus.Completed)
+                {
+                    throw new Exception("Cannot cancel a completed order.");
+                }
+
+                if (order.Status == OrderStatus.Cancelled)
+                {
+                    throw new Exception("Order is already cancelled.");
+                }
+
+                // Cancel the order
+                order.Status = OrderStatus.Cancelled;
+                _orderRepository.Update(order);
+
+                // Restore all products to Available status
+                foreach (var detail in order.OrderDetails)
+                {
+                    if (detail.Product != null)
+                    {
+                        detail.Product.Status = ProductStatus.Available;
+                        _productRepository.Update(detail.Product);
+                    }
+                }
+
+                // Commit transaction
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

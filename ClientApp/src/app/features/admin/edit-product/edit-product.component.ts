@@ -76,6 +76,39 @@ import { Product } from '../../../models/product.models';
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Size (Optional)</label>
+                            <select class="form-select" formControlName="size">
+                                <option value="">-- Select Size --</option>
+                                <optgroup label="Quần áo">
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                    <option value="XXXL">XXXL</option>
+                                </optgroup>
+                                <optgroup label="Giày dép">
+                                    <option value="35">35</option>
+                                    <option value="36">36</option>
+                                    <option value="37">37</option>
+                                    <option value="38">38</option>
+                                    <option value="39">39</option>
+                                    <option value="40">40</option>
+                                    <option value="41">41</option>
+                                    <option value="42">42</option>
+                                    <option value="43">43</option>
+                                    <option value="44">44</option>
+                                    <option value="45">45</option>
+                                </optgroup>
+                                <option value="Free Size">Free Size</option>
+                                <option value="One Size">One Size</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Description</label>
                         <textarea class="form-control" rows="4" formControlName="description"></textarea>
@@ -143,6 +176,7 @@ export class EditProductComponent implements OnInit {
             categoryId: [1, Validators.required],
             status: ['Available'],
             gender: ['Unisex'],
+            size: [''],
             imageUrl: ['']
         });
     }

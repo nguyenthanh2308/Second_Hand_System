@@ -20,7 +20,8 @@ export class AddProductComponent implements OnInit {
         condition: '',
         description: '',
         categoryId: 1,
-        gender: 'Unisex'
+        gender: 'Unisex',
+        size: ''
     };
     selectedFile: File | null = null;
     isSubmitting = false;

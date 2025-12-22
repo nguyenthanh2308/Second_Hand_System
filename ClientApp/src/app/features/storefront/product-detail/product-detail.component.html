@@ -117,6 +117,10 @@
                             <span class="detail-label">Category:</span>
                             <span class="detail-value">{{ product.category?.name }}</span>
                         </div>
+                        <div class="detail-item" *ngIf="product.size">
+                            <span class="detail-label">Size:</span>
+                            <span class="detail-value">{{ product.size }}</span>
+                        </div>
                         <div class="detail-item">
                             <span class="detail-label">Posted:</span>
                             <span class="detail-value">{{ product.createdDate | date:'medium' }}</span>

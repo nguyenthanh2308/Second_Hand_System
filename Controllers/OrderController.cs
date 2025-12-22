@@ -79,5 +79,52 @@ namespace Second_hand_System.Controllers
             await _orderService.UpdateOrderStatusAsync(id, status);
             return NoContent();
         }
+
+        // Admin cancel order - can cancel any order
+        [HttpPost("{id}/cancel")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminCancelOrder(int id)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null) return Unauthorized();
+
+                int userId = int.Parse(userIdClaim.Value);
+                await _orderService.CancelOrderAsync(id, userId, isAdmin: true);
+                return Ok(new { message = "Order cancelled successfully. Products restored to available." });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // Customer cancel order - can only cancel own orders
+        [HttpPost("{id}/customer-cancel")]
+        public async Task<IActionResult> CustomerCancelOrder(int id)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null) return Unauthorized();
+
+                int userId = int.Parse(userIdClaim.Value);
+                await _orderService.CancelOrderAsync(id, userId, isAdmin: false);
+                return Ok(new { message = "Order cancelled successfully. Products restored to available." });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
