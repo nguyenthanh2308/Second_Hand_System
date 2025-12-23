@@ -19,7 +19,7 @@
                         <tr *ngFor="let order of orders$ | async">
                             <td class="ps-4">#{{ order.id }}</td>
                             <td>{{ order.orderDate | date:'medium' }}</td>
-                            <td>User #{{ order.userId }}</td>
+                            <td>{{ order.userName || 'User #' + order.userId }}</td>
                             <td>{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</td>
                             <td>
                                 <select [ngModel]="order.status" (change)="updateStatus(order.id, $event)"

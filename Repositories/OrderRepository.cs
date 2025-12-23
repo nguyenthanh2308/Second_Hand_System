@@ -14,6 +14,7 @@ namespace Second_hand_System.Repositories
         {
             return await _dbSet
                 .AsNoTracking()
+                .Include(o => o.User)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
                 .OrderByDescending(o => o.OrderDate)

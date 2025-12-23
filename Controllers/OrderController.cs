@@ -58,8 +58,8 @@ namespace Second_hand_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllOrders()
         {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return Ok(orders);
+            var orderDtos = await _orderService.GetAllOrdersAsync();
+            return Ok(orderDtos);
         }
 
         [HttpGet("{id}")]

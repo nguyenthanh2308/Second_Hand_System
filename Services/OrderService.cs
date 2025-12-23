@@ -129,6 +129,8 @@ namespace Second_hand_System.Services
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                UserName = order.User?.Username,
+                UserEmail = order.User?.Email,
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
                 Status = order.Status.ToString(),

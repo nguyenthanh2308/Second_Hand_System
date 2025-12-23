@@ -1,6 +1,8 @@
 export interface Order {
     id: number;
     userId: number;
+    userName?: string;
+    userEmail?: string;
     orderDate: Date;
     totalAmount: number;
     status: 'Pending' | 'Shipping' | 'Completed' | 'Cancelled';
