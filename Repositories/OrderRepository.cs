@@ -13,6 +13,7 @@ namespace Second_hand_System.Repositories
         public new async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await _dbSet
+                .AsNoTracking()
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
                 .OrderByDescending(o => o.OrderDate)
@@ -22,6 +23,7 @@ namespace Second_hand_System.Repositories
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
         {
             return await _dbSet
+                .AsNoTracking()
                 .Where(o => o.UserId == userId)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)

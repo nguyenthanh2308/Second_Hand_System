@@ -111,14 +111,46 @@ namespace Second_hand_System.Services
             await _orderRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetMyOrdersAsync(int userId)
+        public async Task<IEnumerable<OrderDto>> GetMyOrdersAsync(int userId)
         {
-            return await _orderRepository.GetOrdersByUserIdAsync(userId);
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
+            return MapOrdersToDto(orders);
         }
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
         {
-            return await _orderRepository.GetAllAsync();
+            var orders = await _orderRepository.GetAllAsync();
+            return MapOrdersToDto(orders);
+        }
+
+        private IEnumerable<OrderDto> MapOrdersToDto(IEnumerable<Order> orders)
+        {
+            return orders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                Status = order.Status.ToString(),
+                ShippingAddress = order.ShippingAddress,
+                OrderDetails = order.OrderDetails.Select(od => new OrderDetailDto
+                {
+                    Id = od.Id,
+                    OrderId = od.OrderId,
+                    ProductId = od.ProductId,
+                    ProductName = od.Product?.Name,
+                    Price = od.Price,
+                    Product = od.Product != null ? new ProductDto
+                    {
+                        Id = od.Product.Id,
+                        Name = od.Product.Name,
+                        ImageUrl = od.Product.ImageUrl,
+                        Condition = od.Product.Condition,
+                        Price = od.Product.Price,
+                        Status = od.Product.Status.ToString()
+                    } : null
+                }).ToList()
+            }).ToList();
         }
 
         public async Task UpdateOrderStatusAsync(int orderId, string status)

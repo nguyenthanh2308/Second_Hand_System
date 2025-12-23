@@ -152,9 +152,9 @@ namespace Second_hand_System.Tests
             var mockOrderService = new Mock<IOrderService>();
             var controller = new OrderController(mockOrderService.Object);
 
-            var expectedOrders = new List<Order>
+            var expectedOrders = new List<OrderDto>
             {
-                new Order { Id = 1, UserId = 1, OrderDate = DateTime.UtcNow, Status = OrderStatus.Pending, ShippingAddress = "123 Main" }
+                new OrderDto { Id = 1, UserId = 1, OrderDate = DateTime.UtcNow, Status = "Pending", ShippingAddress = "123 Main" }
             };
 
             mockOrderService.Setup(s => s.GetMyOrdersAsync(1))
@@ -238,7 +238,7 @@ namespace Second_hand_System.Tests
             var controller = new OrderController(mockOrderService.Object);
 
             mockOrderService.Setup(s => s.GetMyOrdersAsync(It.IsAny<int>()))
-                .ReturnsAsync(new List<Order>());
+                .ReturnsAsync(new List<OrderDto>());
 
             controller.ControllerContext = new ControllerContext
             {
