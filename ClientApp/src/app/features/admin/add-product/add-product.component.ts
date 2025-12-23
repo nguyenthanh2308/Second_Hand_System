@@ -68,6 +68,7 @@ export class AddProductComponent implements OnInit {
         formData.append('Description', this.product.description);
         formData.append('CategoryId', this.product.categoryId.toString());
         formData.append('Gender', this.product.gender);
+        formData.append('Size', this.product.size || '');
         formData.append('ImageFile', this.selectedFile);
 
         this.productService.createProduct(formData).subscribe({

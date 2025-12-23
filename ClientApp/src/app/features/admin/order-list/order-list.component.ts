@@ -33,6 +33,28 @@ export class AdminOrderListComponent implements OnInit {
     updateStatus(orderId: number, event: any) {
         const newStatus = event.target.value;
 
+        // Special handling for Cancelled status - use cancelOrder API
+        if (newStatus === 'Cancelled') {
+            if (!confirm('Cancel this order? Products will be restored to available.')) {
+                // Reset dropdown to previous value
+                this.loadOrders();
+                return;
+            }
+
+            this.orderService.cancelOrder(orderId, true).subscribe({
+                next: (response) => {
+                    this.toastService.success(response.message || 'Order cancelled successfully!');
+                    this.loadOrders();
+                },
+                error: (error) => {
+                    const message = error.error?.message || 'Failed to cancel order';
+                    this.toastService.error(message);
+                    this.loadOrders();
+                }
+            });
+            return;
+        }
+
         // Special handling for Completed status
         if (newStatus === 'Completed') {
             // Get the order to check products
@@ -80,20 +102,4 @@ export class AdminOrderListComponent implements OnInit {
         });
     }
 
-    cancelOrder(orderId: number) {
-        if (!confirm('Are you sure you want to cancel this order? Products will be restored to available.')) {
-            return;
-        }
-
-        this.orderService.cancelOrder(orderId, true).subscribe({
-            next: (response) => {
-                this.toastService.success(response.message || 'Order cancelled successfully!');
-                this.loadOrders(); // Reload orders
-            },
-            error: (error) => {
-                const message = error.error?.message || 'Failed to cancel order';
-                this.toastService.error(message);
-            }
-        });
-    }
 }
