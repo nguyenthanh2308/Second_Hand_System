@@ -95,7 +95,7 @@ Swagger UI available at: `http://localhost:5000/swagger`
 ### 6. Run Frontend
 
 ```bash
-cd ClientApp
+cd frontend
 npm install
 npm start
 ```

@@ -15,10 +15,10 @@ appsettings.Development.json
 appsettings.Production.json
 
 ## Frontend
-ClientApp/node_modules/
-ClientApp/dist/
-ClientApp/.angular/
-ClientApp/.vscode/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.vscode/
 
 ## Database
 *.db
