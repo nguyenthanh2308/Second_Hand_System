@@ -1,7 +1,34 @@
+## Build Artifacts
 .vs/
 bin/
 obj/
 *.user
-ClientApp/node_modules/
+
+## Logs
 build_log.txt
 test_log.txt
+*.log
+
+## Sensitive Configuration Files (SECURITY)
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+## Frontend
+ClientApp/node_modules/
+ClientApp/dist/
+ClientApp/.angular/
+ClientApp/.vscode/
+
+## Database
+*.db
+*.db-shm
+*.db-wal
+
+## IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates

@@ -10,8 +10,39 @@ using Second_hand_System.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ========================================
+// SECURITY: Validate Critical Configuration
+// ========================================
+
+// Validate Database Connection String
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrEmpty(connectionString) || 
+    connectionString.Contains("YOUR_SERVER") || 
+    connectionString.Contains("YOUR_DATABASE") ||
+    connectionString.Contains("YOUR_PASSWORD"))
+{
+    throw new InvalidOperationException(
+        "Database connection string not properly configured. " +
+        "Please copy appsettings.Example.json to appsettings.json and update with your database credentials.");
+}
+
+// Validate JWT Secret Key (with Environment Variable fallback)
+var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+             ?? builder.Configuration["Jwt:Key"];
+
+if (string.IsNullOrEmpty(jwtKey) || 
+    jwtKey.Contains("YOUR_SECRET_KEY") ||
+    jwtKey.Length < 32)
+{
+    throw new InvalidOperationException(
+        "JWT Secret Key not properly configured or too short (minimum 32 characters required). " +
+        "Options:\n" +
+        "  1. Set environment variable: JWT_SECRET_KEY=your-secret-here\n" +
+        "  2. Update appsettings.json with a secure key (minimum 32 characters)\n" +
+        "Please copy appsettings.Example.json to appsettings.json and configure properly.");
+}
+
+// Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -50,7 +81,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "MinLengthKeyRequirement1234567890!!")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             RoleClaimType = System.Security.Claims.ClaimTypes.Role
         };
         
