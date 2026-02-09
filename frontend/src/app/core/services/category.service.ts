@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Category {
     id: number;
@@ -15,7 +16,7 @@ export class CategoryService {
     constructor(private http: HttpClient) { }
 
     getCategories(): Observable<Category[]> {
-        return this.http.get<Category[]>('/api/category');
+        return this.http.get<Category[]>(`${environment.apiUrl}/api/category`);
     }
 
     getCategory(id: number): Observable<Category> {
@@ -23,7 +24,7 @@ export class CategoryService {
     }
 
     createCategory(category: Category): Observable<Category> {
-        return this.http.post<Category>('/api/category', category);
+        return this.http.post<Category>(`${environment.apiUrl}/api/category`, category);
     }
 
     updateCategory(id: number, category: Category): Observable<void> {
