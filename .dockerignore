@@ -1,0 +1,14 @@
+bin/
+obj/
+out/
+.vs/
+.vscode/
+*.user
+*.suo
+frontend/node_modules/
+frontend/dist/
+appsettings.json
+appsettings.Development.json
+*.db
+*.db-shm
+*.db-wal
