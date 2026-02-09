@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { LoginRequest, RegisterRequest, User } from '../../models/auth.models';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +11,7 @@ import { Router } from '@angular/router';
 export class AuthService {
     private currentUserSubject: BehaviorSubject<User | null>;
     public currentUser$: Observable<User | null>;
+    private apiUrl = `${environment.apiUrl}/api/auth`;
 
     constructor(private http: HttpClient, private router: Router) {
         const storedUser = sessionStorage.getItem('currentUser');
@@ -22,7 +24,7 @@ export class AuthService {
     }
 
     login(loginRequest: LoginRequest): Observable<string> {
-        return this.http.post<{ token: string }>('/api/auth/login', loginRequest)
+        return this.http.post<{ token: string }>(`${this.apiUrl}/login`, loginRequest)
             .pipe(map(response => {
                 const token = response.token;
                 const user = this.decodeToken(token);
@@ -33,7 +35,7 @@ export class AuthService {
     }
 
     register(registerRequest: RegisterRequest): Observable<any> {
-        return this.http.post('/api/auth/register', registerRequest);
+        return this.http.post(`${this.apiUrl}/register`, registerRequest);
     }
 
     logout() {
