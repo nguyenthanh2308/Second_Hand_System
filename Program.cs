@@ -43,8 +43,20 @@ if (string.IsNullOrEmpty(jwtKey) ||
 }
 
 // Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+// Support PostgreSQL (production) and MySQL (development)
+var isDevelopment = builder.Environment.IsDevelopment();
+if (isDevelopment)
+{
+    // Development: MySQL
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+}
+else
+{
+    // Production: PostgreSQL (for Render deployment)
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
 
 // Dependency Injection - Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -63,7 +75,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        var allowedOrigins = new List<string> { "http://localhost:4200" };
+        
+        // Add production URL if configured
+        var productionUrl = builder.Configuration["ProductionFrontendUrl"];
+        if (!string.IsNullOrEmpty(productionUrl))
+        {
+            allowedOrigins.Add(productionUrl);
+        }
+        
+        policy.WithOrigins(allowedOrigins.ToArray())
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
