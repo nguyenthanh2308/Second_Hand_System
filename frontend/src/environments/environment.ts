@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://secondhand-api.onrender.com'
+    apiUrl: 'https://second-hand-system.onrender.com'
 };
