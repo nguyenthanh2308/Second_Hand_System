@@ -15,15 +15,19 @@ var builder = WebApplication.CreateBuilder(args);
 // ========================================
 
 // Validate Database Connection String
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Priority: Environment variable (for Render) > appsettings.json (for local)
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
+                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 if (string.IsNullOrEmpty(connectionString) || 
     connectionString.Contains("YOUR_SERVER") || 
     connectionString.Contains("YOUR_DATABASE") ||
-    connectionString.Contains("YOUR_PASSWORD"))
+    connectionString.Contains("YOUR_PASSWORD") ||
+    connectionString.Contains("${DATABASE_URL}"))
 {
     throw new InvalidOperationException(
         "Database connection string not properly configured. " +
-        "Please copy appsettings.Example.json to appsettings.json and update with your database credentials.");
+        "Please set DATABASE_URL environment variable or update appsettings.json with your database credentials.");
 }
 
 // Validate JWT Secret Key (with Environment Variable fallback)
