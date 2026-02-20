@@ -44,19 +44,20 @@ if (string.IsNullOrEmpty(jwtKey) ||
 
 // Add services to the container.
 // Support PostgreSQL (production) and MySQL (development)
-var isDevelopment = builder.Environment.IsDevelopment();
-if (isDevelopment)
-{
-    // Development: MySQL
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-}
-else
-{
-    // Production: PostgreSQL (for Render deployment)
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
+    // Verify Connection String Type and Configure Provider
+    // If connection string looks like PostgreSQL (Render), use Npgsql
+    if (connectionString.Contains("postgres") || connectionString.Contains("5432") || connectionString.Contains("User ID=") == false) 
+    {
+        // PostgreSQL (Production / Render)
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(connectionString));
+    }
+    else
+    {
+        // MySQL (Development)
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    }
 
 // Dependency Injection - Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
