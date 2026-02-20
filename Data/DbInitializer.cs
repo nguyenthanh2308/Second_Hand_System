@@ -11,42 +11,50 @@ namespace Second_hand_System.Data
             // Ensure database is created
             context.Database.EnsureCreated();
 
-            // Check if users already exist
-            if (context.Users.Any())
+            // 1. Ensure Admin User Exists
+            if (!context.Users.Any(u => u.Username == "admin"))
             {
-                return; // DB has been seeded
+                var admin = new User
+                {
+                    Username = "admin",
+                    PasswordHash = HashPassword("Admin@123"),
+                    Email = "admin@example.com",
+                    Address = "Admin HQ",
+                    Role = UserRole.Admin
+                };
+                context.Users.Add(admin);
+                context.SaveChanges();
             }
 
-            // 1. Seed Users
-            var admin = new User
+            // Check if data already exists to avoid duplication
+            if (context.Products.Any())
             {
-                Username = "admin",
-                PasswordHash = HashPassword("Admin@123"),
-                Email = "admin@example.com",
-                Address = "Admin HQ",
-                Role = UserRole.Admin
-            };
+                return; // Data has been seeded
+            }
 
-            var customer = new User
+            // 2. Seed Users (Customer only if not exists)
+            if (!context.Users.Any(u => u.Username == "customer"))
             {
-                Username = "customer",
-                PasswordHash = HashPassword("Customer@123"),
-                Email = "customer@example.com",
-                Address = "123 Main St",
-                Role = UserRole.Customer
-            };
+                var customer = new User
+                {
+                    Username = "customer",
+                    PasswordHash = HashPassword("Customer@123"),
+                    Email = "customer@example.com",
+                    Address = "123 Main St",
+                    Role = UserRole.Customer
+                };
+                context.Users.Add(customer);
+                context.SaveChanges();
+            }
 
-            context.Users.AddRange(admin, customer);
-            context.SaveChanges();
-
-            // 2. Seed Categories
+            // 3. Seed Categories
             var cat1 = new Category { Name = "Áo thun", Description = "Các loại áo thun nam nữ" };
             var cat2 = new Category { Name = "Quần Jean", Description = "Quần Jean thời trang" };
 
             context.Categories.AddRange(cat1, cat2);
             context.SaveChanges();
 
-            // 3. Seed Products
+            // 4. Seed Products
             var products = new List<Product>
             {
                 new Product
