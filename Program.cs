@@ -55,7 +55,7 @@ else
 {
     // Production: PostgreSQL (for Render deployment)
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(connectionString));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
 // Dependency Injection - Repositories
