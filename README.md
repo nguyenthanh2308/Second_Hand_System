@@ -187,13 +187,16 @@ After setup, you can login with these pre-configured accounts:
 
 ## 🌐 Live Demo
 
-> **Deployment Coming Soon**
+> **🚀 The platform is now live!**
 
-A live demo deployment will be available shortly. Contact for:
-- Cloud hosting setup (AWS, Azure, Google Cloud)
-- Custom domain configuration
-- SSL certificate installation
-- Production database migration
+- **Customer Storefront & Admin Dashboard:** [https://second-hand-system.vercel.app/](https://second-hand-system.vercel.app/)
+- **Backend API (Swagger):** [https://second-hand-system.onrender.com/swagger](https://second-hand-system.onrender.com/swagger)
+
+*Note: The backend is hosted on Render's free tier, so it may take 30-50 seconds to spin up on the first request if it has been idle.*
+
+**Test Accounts:**
+- **Admin**: `admin` / `Admin@123`
+- **Customer**: `customer` / `Customer@123`
 
 ---
 
